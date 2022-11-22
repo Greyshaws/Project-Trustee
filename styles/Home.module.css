@@ -1,0 +1,42 @@
+.background {
+  background-color: whitesmoke;
+  width: 100%;
+  height: 100vh;
+}
+
+.container {
+  padding: 0 6em;
+}
+
+.ctaHeading {
+  margin-bottom: 1em;
+}
+
+.ctaBody {
+  margin-bottom: 3em;
+}
+
+.ctaButton {
+  height: 4em;
+  width: 18em;
+}
+
+@media (max-width: 480px) {
+  .grid {
+    width: 100%;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .card,
+  .footer {
+    border-color: #222;
+  }
+  .code {
+    background: #111;
+  }
+  .logo img {
+    filter: invert(1);
+  }
+}
