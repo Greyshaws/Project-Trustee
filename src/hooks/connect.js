@@ -16,7 +16,7 @@ export const useConnectWallet = (network) => {
     
 
     const networkChanged = (chainId) => {
-        setChainId(Number(converter.hexToDec(chainId)))
+        setChainId(Number(converter.hexToDec(chainId)));
     };
 
     const connect = async () => {
