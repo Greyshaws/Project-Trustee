@@ -20,7 +20,7 @@ const NewTrust = () => {
 
       <NavBar />
 
-      <main>
+      <main >
         <PaddedContainer>
           <Typography variant="h2" component="h1" gutterBottom>
             Create a Trust

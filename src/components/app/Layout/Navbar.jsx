@@ -15,9 +15,27 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import NavDrawer from "./NavDrawer"
 
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
+const pagesX = [
+  {
+    text: "Home",
+    link: "/new-trust"
+  },
+  {
+    text: "About",
+    link: "/new-trust"
+  },
+  {
+    text: "Paper",
+    link: "/new-trust"
+  },
+]
 
 const NavBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -26,15 +44,13 @@ const NavBar = () => {
   // const {connect, loading, accounts } = useContext(Web3Context);
 
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
+    setToggleNavDrawerIsOpen(false)
   };
 
   const handleCloseUserMenu = () => {
@@ -43,10 +59,10 @@ const NavBar = () => {
 
   return (
     <React.Fragment>
-      <AppBar sx={{ background: "rgba(255,255,255,0.8)", border: 1, borderBottom: 0, }} variant="outlined" >
-        <Toolbar>
+      <AppBar sx={{ border: 0, borderBottom: 0, background: "white"}}  >
+        <Toolbar >
 
-        <AdbIcon color="primary.main" sx={{ display: { xs: 'none', md: 'flex' }, color: 'primary.main', mr: 1 }} />
+        <AdbIcon sx={{ display: { xs: 'none', md: 'flex' },  mr: 1, color: "primary.main"}} />
           <Typography
             variant="h6"
             noWrap
@@ -58,55 +74,21 @@ const NavBar = () => {
               fontFamily: 'monospace',
               fontWeight: 700,
               letterSpacing: '.3rem',
-              color: 'primary.main',
               textDecoration: 'none',
+              color: "primary.main"
             }}
           >
-            LOGO
+            TRUSTEE
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+
+            {/* Small Screens */}
+
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }} >
           
-
-
-
-
-          <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' },
-              }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center" >{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+            <NavDrawer pages={pagesX}/>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, color: 'primary.main', mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -119,28 +101,62 @@ const NavBar = () => {
               fontFamily: 'monospace',
               fontWeight: 700,
               letterSpacing: '.3rem',
-              color: 'inherit',
+              color: 'primary.main',
               textDecoration: 'none',
             }}
           >
-            LOGO
+            TRUSTEE
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+
+
+          {/* Big Screens */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: "flex-end", border: 1 }}>
+            {pagesX.map((page) => (
               <Button
-                key={page}
+                key={page.link}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                sx={{ my: 0, display: 'block' }}
               >
-                {page}
+                {page.text}
               </Button>
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
+          <Box sx={{ flexGrow: 0, ml: { md: 6} }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, }} >
+              <AccountCircleOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+
+          
+          <Box sx={{ flexGrow: 0, ml: 2 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }} >
+                <AccountBalanceWalletOutlinedIcon />
               </IconButton>
             </Tooltip>
             <Menu
