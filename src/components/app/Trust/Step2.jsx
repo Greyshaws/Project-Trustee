@@ -10,7 +10,8 @@ import FormControl from '@mui/material/FormControl';
 import Button from '@mui/material/Button'
 import LocalizedTimePicker from "./LocalizedTimePicker"
 
-const Step2 = () => {
+const Step2 = ({template}) => {
+
 
     const [values, setValues] = React.useState({
         address: '',
@@ -18,6 +19,7 @@ const Step2 = () => {
         date: {},
         window: '',
       });
+
 
 
       const handleAddressChange = (prop) => (event) => {

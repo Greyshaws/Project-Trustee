@@ -7,7 +7,7 @@ import CreateTrust from "../src/components/app/Trust/CreateTrust";
 import Footer from "../src/components/app/Layout/Footer";
 import { useRouter } from "next/router";
 
-const NewTrust = () => {
+const About = () => {
   const router = useRouter();
 
   return (
@@ -18,12 +18,9 @@ const NewTrust = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header>
       <NavBar />
-      </header>
-      
 
-      <main style={{minHeight: "100vh"}}>
+      <main >
         <PaddedContainer>
           <Typography variant="h2" component="h1" gutterBottom>
             Create a Trust
@@ -37,4 +34,4 @@ const NewTrust = () => {
   );
 };
 
-export default NewTrust;
+export default About;

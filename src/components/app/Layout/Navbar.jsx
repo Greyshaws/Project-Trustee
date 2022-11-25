@@ -18,6 +18,9 @@ import MenuItem from '@mui/material/MenuItem';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import NavDrawer from "./NavDrawer"
+import HomeIcon from '@mui/icons-material/Home';
+import InsightsIcon from '@mui/icons-material/Insights';
+import DescriptionIcon from '@mui/icons-material/Description';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -25,15 +28,18 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const pagesX = [
   {
     text: "Home",
-    link: "/new-trust"
+    link: "/new-trust",
+    icon: <HomeIcon />
   },
   {
     text: "About",
-    link: "/new-trust"
+    link: "/about",
+    icon: <InsightsIcon />
   },
   {
     text: "Paper",
-    link: "/new-trust"
+    link: "/white-paper",
+    icon: <DescriptionIcon />
   },
 ]
 
@@ -59,7 +65,7 @@ const NavBar = () => {
 
   return (
     <React.Fragment>
-      <AppBar sx={{ border: 0, borderBottom: 0, background: "white"}}  >
+      <AppBar sx={{ background: "white", }} variant="outlined" >
         <Toolbar >
 
         <AdbIcon sx={{ display: { xs: 'none', md: 'flex' },  mr: 1, color: "primary.main"}} />
