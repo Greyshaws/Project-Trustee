@@ -4,19 +4,27 @@
   height: 100vh;
 }
 
+.hero_section {
+  display: flex;
+  align-items: center;
+  background-color: #171d2e;
+  color: white;
+  height: 40em;
+}
+
 .container {
   padding: 0 6em;
 }
 
-.ctaHeading {
+.hero_section .heading {
   margin-bottom: 1em;
 }
 
-.ctaBody {
+.hero_section .body {
   margin-bottom: 3em;
 }
 
-.ctaButton {
+.hero_section .button {
   height: 4em;
   width: 18em;
 }

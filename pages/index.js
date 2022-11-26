@@ -4,6 +4,7 @@ import NavBar from '../src/components/app/Navbar'
 import styles from '../styles/Home.module.css'
 import PaddedContainer from '../src/components/app/PaddedContainer'
 import { useRouter } from 'next/router'
+import Image from 'next/image'
 
 const Home = () => {
 
@@ -22,33 +23,40 @@ const Home = () => {
 
         <NavBar /> 
 
-        <PaddedContainer>
+        <PaddedContainer className={styles.hero_section}>
 
-          <Grid item container className={styles.cta}>
+          <Grid item container>
 
             <Grid container item alignItems={"center"} sm={6}>
 
               <div>
 
-                <Typography className={styles.ctaHeading} variant={"h4"}> Secure your Digital Assets </Typography>
+                <Typography className={styles.heading} variant={"h4"}> Secure your Digital Assets </Typography>
 
-                <Typography className={styles.ctaBody}  variant={"body1"}>
+                <Typography className={styles.body}  variant={"body1"}>
                   Prevent your digital assets from being lost forever,
                   Let your loved onces inherit your digital asset
                 </Typography>
               
-                <Button onClick={() => router.push('/contract')} className={styles.ctaButton} variant='contained'> Create A Will </Button>
+                <Button onClick={() => router.push('/contract')} className={styles.button} variant='contained'> Create A Will </Button>
 
               </div>
             </Grid>
 
 
-            <Grid sx={{background: "red", height: "26em"}} item sm={6}>
+            <Grid item sm={6}>
 
+              <Image src={'/contract.png'}   width={500} height={500} alt='hero'/>
               
             </Grid>
 
           </Grid>
+
+        </PaddedContainer>
+
+        <PaddedContainer>
+
+          Y
 
         </PaddedContainer>
 
