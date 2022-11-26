@@ -18,6 +18,7 @@
 
 .hero_section .heading {
   margin-bottom: 1em;
+  font-size: 38px;
 }
 
 .hero_section .body {
@@ -29,11 +30,50 @@
   width: 18em;
 }
 
-@media (max-width: 480px) {
-  .grid {
-    width: 100%;
-    flex-direction: column;
+.product {
+  margin-top: -220px;
+}
+
+.call_to_action {
+  display: flex;
+  align-items: center;
+  background-color: #171d2e;
+  color: white;
+  margin-top: -150px;
+}
+
+.container {
+  padding: 0 6em;
+}
+
+.call_to_action .heading {
+  margin-bottom: 1em;
+  font-size: 38px;
+}
+
+.call_to_action  .body {
+  margin-bottom: 3em;
+}
+
+.call_to_action  .button {
+  height: 4em;
+  width: 18em;
+}
+
+@media (max-width: 640px) {
+  .hero_section {
+    height: 60em;
   }
+
+  .call_to_action {
+    margin-top: -50px;
+    padding-top: 4em;
+  }
+
+  .product {
+    margin-top: -160px;
+  }
+  
 }
 
 @media (prefers-color-scheme: dark) {

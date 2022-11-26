@@ -3,6 +3,8 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 //  Test Beneficiaries
 //  [[true, 0, 100, 2000, 5000, "First", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB"], [true, 0, 100, 2000, 5000, "Second", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB"]]
@@ -10,7 +12,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 //please add the suitable guards to this code patch any vulnerability you find
 
-contract Trustee {
+contract Trustee is ReentrancyGuard, Ownable {
 
     struct Beneficiary {
         bool isNft;
@@ -33,8 +35,8 @@ contract Trustee {
     }
 
 
-    mapping(address => Trust) public TrustData;
-    mapping(address => mapping(uint256 => Beneficiary)) public beneficiaryData;
+    mapping(address => Trust) internal TrustData;
+    mapping(address => mapping(uint256 => Beneficiary)) internal beneficiaryData;
 
     function createTrust (uint256 _interval, string calldata _title, Beneficiary[] calldata _beneficiaries) external {
         require (!TrustData[msg.sender].active, "Address can't have multiple active Trust");
@@ -89,7 +91,6 @@ contract Trustee {
     }
 
 
-
     //NFT Section
     function isNftApproved (address _nftAddress, uint256 _tokenId) public view returns(bool) {
         if (IERC721(_nftAddress).getApproved(_tokenId) != address(this)) {
@@ -100,14 +101,10 @@ contract Trustee {
     }
 
     //Token section
-    // You should change the name to something appropriate not tested 
-    function isTokenApproved (address tokenAddress, address owner) public view returns(bool) {
-        if (IERC20(tokenAddress).allowance(owner, address(this)) != 0) {
-            return false;
-        } else {
-            return true;
-        }
+    function getApprovedTokens(address tokenAddress, address owner) public view returns(uint256) {
+        return IERC20(tokenAddress).allowance(owner, address(this));
     }
 
     
 }
+
