@@ -89,8 +89,12 @@ const CreateTrust = () => {
     setActiveStep(0);
 
   };
-  // step logic ends */\
+  // step logic ends */
 
+
+  const handleClickedCreateTrust = () => {
+      handleNext();
+  }
 
 
    
@@ -136,7 +140,7 @@ const CreateTrust = () => {
             <>
 
                 {(activeStep === 0) ? <Step1 onDone={handleTemplateSelected} /> : null}
-                {(activeStep === 1) ? <Step2 template={trustTemplate} /> : null}
+                {(activeStep === 1) ? <Step2 template={trustTemplate} onClickedCreateTrust={handleClickedCreateTrust} /> : null}
                 {(activeStep === 2) ? <Step3 /> : null}
                 
 

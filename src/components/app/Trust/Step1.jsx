@@ -4,17 +4,20 @@ import Grid from "@mui/material/Unstable_Grid2";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import TrustTemplates from "./TrustTemplates";
+import { TrustContext } from "../../../context/trust-context";
 
 
 
 const Step1 = ({ onDone }) => {
   const [isTemplate, setIsTemplate] = useState(false);
 
-  
+  const trustCtx = useContext(TrustContext)
+  const {trustTemplates}= trustCtx
+
 
   const createNewHandler = () => {
     setIsTemplate(false)
-    onDone();
+    onDone(trustTemplates[0])
   };
 
   const chooseTemplateHandler = () => {

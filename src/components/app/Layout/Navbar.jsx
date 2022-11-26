@@ -22,8 +22,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import InsightsIcon from '@mui/icons-material/Insights';
 import DescriptionIcon from '@mui/icons-material/Description';
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profile', 'My Trusts', 'Create', 'Logout'];
 
 const pagesX = [
   {

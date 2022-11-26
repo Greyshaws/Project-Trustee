@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
@@ -8,36 +8,52 @@ import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Button from '@mui/material/Button'
+import Stack from '@mui/material/Stack'
 import LocalizedTimePicker from "./LocalizedTimePicker"
+import LiteralDatePicker from './LiteralDatePicker';
+import {TrustContext } from "../../../context/trust-context"
 
-const Step2 = ({template}) => {
+const Step2 = ({template, onClickedCreateTrust}) => {
+    const trustCtx = useContext(TrustContext);
 
+    const { workingTrust, updateWorkingTrust, addTrustTemplate} = trustCtx
 
-    const [values, setValues] = React.useState({
-        address: '',
-        amount: 0,
-        date: {},
-        window: '',
-      });
+      // console.log(template)
+
+      const { data: { deadline: {format}} } = template
+
+      let dateFormateIsTimePicker = (format === "year-month-day") ? false : true
 
 
 
       const handleAddressChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value });
+        updateWorkingTrust({ ...workingTrust, [prop]: event.target.value });
       };
 
       const handleAmountChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value });
+        updateWorkingTrust({ ...workingTrust, [prop]: event.target.value });
       };
 
       const handleDated = (_dateData) => {
-        setValues({ ...values, date: _dateData });
-        setValues({ ...values, window: (_dateData.dateTimeUnix * 1000) }); 
-      }
-    
+        updateWorkingTrust({ ...workingTrust,  date: {..._dateData}, window: (_dateData.dateTimeUnix * 1000) });
 
+      }
+
+      const saveWorkingTrustHandler = () => {
+        addTrustTemplate();
+      }
+
+      const formSubmitHandler = (event) => {
+        event.preventDefault();
+        console.log("hasError Checks");
+
+        onClickedCreateTrust();
+
+      }
+
+    
   return (
-    <Box component="form" sx={{my: 4}} >
+    <Box component="form" sx={{my: 4}} onSubmit={formSubmitHandler}>
         <div>
         
         <FormControl fullWidth sx={{ mb: 4 }}>
@@ -45,7 +61,7 @@ const Step2 = ({template}) => {
           <OutlinedInput
             id="outlined-adornment-address"
             aria-describedby="my-helper-text"
-            value={values.address}
+            value={workingTrust.address}
             onChange={handleAddressChange('address')}
             endAdornment={
             <IconButton
@@ -66,7 +82,7 @@ const Step2 = ({template}) => {
           <OutlinedInput
             id="outlined-adornment-amount"
             aria-describedby="my-helper-text"
-            value={values.amount}
+            value={workingTrust.amount}
             type="number"
             onChange={handleAmountChange('amount')}
             endAdornment={
@@ -84,11 +100,27 @@ const Step2 = ({template}) => {
         </FormControl>
         
       </div>
-        <LocalizedTimePicker onDated={handleDated} />
+        {dateFormateIsTimePicker && <LocalizedTimePicker onDated={handleDated} />}
 
-      <Button variant="contained" sx={{my: 4}}>
-        CREATE
+        {!dateFormateIsTimePicker && <LiteralDatePicker onDated={handleDated} /> }
+            
+        <Stack sx={{
+          display: {sm: "flex"},
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "flex-end"
+        }
+        }>
+
+<Button variant="outlined" sx={{my: 3, }} type="button" onClick={saveWorkingTrustHandler}>
+        SAVE AS TEMPLATE
       </Button>
+          <Button variant="contained" sx={{my: 3, ml: {sm: 2}}} type="submit">
+        CREATE TRUST
+      </Button>
+      
+        </Stack>
+      
     </Box>
   )
 }

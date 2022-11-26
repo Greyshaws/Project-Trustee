@@ -11,12 +11,19 @@ const DEFAULT_TRUST_TEMPS = [
       icon: <AdbIcon />,
       data: {
         beneficiary: {
-          type: "single",
-          address: "oxjkkbhxcvbnliytdretxcvbnkjhdsdfvb",
+          type: "single", // single or multi
+          beneficiaryData: { address: "oxjkkbhxcvbnliytdretxcvbnkjhdsdfvb", amount: 100 }, // string or array
         },
         amount: 100,
-        date: dayjs.unix(dayjs("2022-04-07")).unix(),
+        deadline: {
+          format: "year-month-day",
+          date: dayjs.unix(dayjs("2022-04-07")).unix(),
+        },
+        description: "This is a Trust",
       },
+      
+      
+      isNFT: false,
     },
     {
       id: "temp2",
@@ -25,11 +32,16 @@ const DEFAULT_TRUST_TEMPS = [
       data: {
         beneficiary: {
           type: "single",
-          address: "oxjkkbhxcvbnliytdretxcvbnkjhdsdfvb",
+          beneficiaryData: { address: "oxjkkbhxcvbnliytdretxcvbnkjhdsdfvb", amount: 100},
         },
         amount: 100,
-        date: dayjs.unix(dayjs("2022-04-07")).unix(),
+        deadline: {
+          format: "year-month-day",
+          date: dayjs.unix(dayjs("2022-04-07")).unix(),
+        },
+        description: "This is a Trust",
       },
+      isNFT: false,
     },
     {
       id: "temp3",
@@ -38,40 +50,58 @@ const DEFAULT_TRUST_TEMPS = [
       data: {
         beneficiary: {
           type: "single",
-          address: "oxjkkbhxcvbnliytdretxcvbnkjhdsdfvb",
+          beneficiaryData: { address: "oxjkkbhxcvbnliytdretxcvbnkjhdsdfvb", amount: 100},
         },
         amount: 100,
-        date: dayjs.unix(dayjs("2022-04-07")).unix(),
+        deadline: {
+          format: "year-month-day",
+          date: dayjs.unix(dayjs("2022-04-07")).unix(),
+        },
+        description: "This is a Trust",
       },
+      isNFT: false,
     },
   ];
 
 export const TrustContext = React.createContext({
-    
+    workingTrust: {},
     trustTemplates: [],
     createTrust: () => {},
     addTrustTemplate: () => {},
+    updateWorkingTrust: () => {},
 })
 
 
 
 const TrustContextProvider = ({children}) => {
+  const [workingTrust, setWorkingTrust] = useState({
+    address: '',
+        amount: 0,
+        date: {},
+        window: '',
+  })
     const [trustTemplates, setTrustTemplates] =useState(DEFAULT_TRUST_TEMPS)
 
     const createTrustHandler = () => {
-        console.log("create Trust")
+        console.log("creating Trust")
     }
 
     const addTrustTemplateHandler = (_newTemp) => {
-        setTrustTemplates((prevTemps) => [...prevTemps, _newTemp])
+        console.log("saved trust template")
+        // setTrustTemplates((prevTemps) => [...prevTemps, _newTemp])
+    }
+
+    const updateWorkingTrustHandler = (_trust) => {
+      setWorkingTrust(_trust)
     }
 
     return (
         <TrustContext.Provider value={{
+            workingTrust: workingTrust,
             trustTemplates: trustTemplates,
             createTrust: createTrustHandler,
             addTrustTemplate: addTrustTemplateHandler,
-
+            updateWorkingTrust: updateWorkingTrustHandler,
         }}>
             {children}
         </TrustContext.Provider>
