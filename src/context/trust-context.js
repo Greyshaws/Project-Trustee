@@ -69,16 +69,19 @@ export const TrustContext = React.createContext({
     createTrust: () => {},
     addTrustTemplate: () => {},
     updateWorkingTrust: () => {},
+    addWorkingTrustBeneficiary: () => {},
+    deleteWorkingTrustBeneficiary: () => {}
 })
 
 
 
 const TrustContextProvider = ({children}) => {
   const [workingTrust, setWorkingTrust] = useState({
-    address: '',
+        beneficiaryData: [],
         amount: 0,
         date: {},
         window: '',
+        description: '',
   })
     const [trustTemplates, setTrustTemplates] =useState(DEFAULT_TRUST_TEMPS)
 
@@ -86,13 +89,49 @@ const TrustContextProvider = ({children}) => {
         console.log("creating Trust")
     }
 
-    const addTrustTemplateHandler = (_newTemp) => {
+    const addTrustTemplateHandler = (_newTemplate) => {
         console.log("saved trust template")
-        // setTrustTemplates((prevTemps) => [...prevTemps, _newTemp])
+        // setTrustTemplates((prevTemps) => [...prevTemps, _newTemplate])
     }
 
     const updateWorkingTrustHandler = (_trust) => {
       setWorkingTrust(_trust)
+    }
+
+    const addWorkingTrustBeneficiaryHandler = (_newBeneficiary) => {
+      let beneficiaryAlreadyExists = workingTrust.beneficiaryData.filter(ben => {
+        return ben.address === _newBeneficiary.address
+      }).length > 0
+
+      if (beneficiaryAlreadyExists) {
+        console.log("ben already exists")
+        return
+      }
+
+
+      updateWorkingTrustHandler({
+        ...workingTrust, 
+        beneficiaryData:  [
+            ...workingTrust.beneficiaryData,
+            _newBeneficiary
+        ]
+      })
+      console.log("added working trust beneficiary")
+    }
+
+    const deleteWorkingTrustBeneficiaryHandler = (_address) => {
+      let beneficiaries = [...workingTrust.beneficiaryData]
+
+      let updatedBeneficiaries = beneficiaries.filter((ben) => {
+        return ben.address !== _address
+      })
+
+      updateWorkingTrustHandler({...workingTrust, 
+        beneficiaryData: [
+            ...updatedBeneficiaries
+          ]
+        })
+
     }
 
     return (
@@ -102,6 +141,9 @@ const TrustContextProvider = ({children}) => {
             createTrust: createTrustHandler,
             addTrustTemplate: addTrustTemplateHandler,
             updateWorkingTrust: updateWorkingTrustHandler,
+            addWorkingTrustBeneficiary: addWorkingTrustBeneficiaryHandler,
+            deleteWorkingTrustBeneficiary: deleteWorkingTrustBeneficiaryHandler,
+
         }}>
             {children}
         </TrustContext.Provider>

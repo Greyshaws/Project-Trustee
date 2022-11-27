@@ -24,6 +24,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 
 const settings = ['Profile', 'My Trusts', 'Create', 'Logout'];
 
+
 const pagesX = [
   {
     text: "Home",
@@ -64,7 +65,8 @@ const NavBar = () => {
 
   return (
     <React.Fragment>
-      <AppBar sx={{ background: "white", }} variant="outlined" >
+      <AppBar sx={{ background: "white",  borderBottom: 1,
+        borderColor: "rgba(0,0,0,0.12)", }} elevation={0} >
         <Toolbar >
 
         <AdbIcon sx={{ display: { xs: 'none', md: 'flex' },  mr: 1, color: "primary.main"}} />
