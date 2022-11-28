@@ -4,5 +4,5 @@ const signer = require('./signer')
 
 cron.schedule('* * * * *', () => {
   console.log('running a task every minute');
-  //signer.performUpkeep()
+  signer.performUpkeep()
 });

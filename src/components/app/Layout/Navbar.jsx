@@ -47,7 +47,7 @@ const NavBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-  // const {connect, loading, accounts } = useContext(Web3Context);
+  const {connect, loading, accounts } = useContext(Web3Context);
 
 
   const handleOpenUserMenu = (event) => {
@@ -130,11 +130,15 @@ const NavBar = () => {
           </Box>
 
           <Box sx={{ flexGrow: 0, ml: { md: 6} }}>
-            <Tooltip title="Open settings">
+            <LoadingButton loading={loading} variant="contained" onClick={connect}>
+              {accounts ? truncateAddress(accounts) : "Connect"}
+            </LoadingButton>
+
+            {/* <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, }} >
-              <AccountCircleOutlinedIcon />
-              </IconButton>
-            </Tooltip>
+                <AccountCircleOutlinedIcon />
+              </IconButton> 
+            </Tooltip> */}
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
