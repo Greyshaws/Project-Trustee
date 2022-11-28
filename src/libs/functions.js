@@ -36,8 +36,6 @@ export async function getApproved(reciever, tokenUrl) {
 
     const result = await currentContract.approve(contract, tokenId);
 
-    await result.wait()
-
     return result
 
 }

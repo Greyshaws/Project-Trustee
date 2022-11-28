@@ -1,5 +1,6 @@
 const { Wallet, ethers } = require('ethers');
 const ABI = require("../src/libs/contract_abi.json");
+const { toHex } = require('../src/libs/utils');
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY
 const CONTRACT = process.env.CONTRACT
@@ -11,8 +12,8 @@ const signer = wallet.connect(alchemyProvider);
 const contract = new ethers.Contract(CONTRACT, ABI, signer);
 
 exports.performUpkeep = async (address) => {
-
-    //const result = await contract.subscriptionPrice()
+    const result = await contract.subscriptionPrice()
+    console.log(toHex(result._hex))
 }
 
 

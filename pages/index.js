@@ -56,7 +56,7 @@ const Home = () => {
                       Let your loved ones inherit your digital asset
                     </Typography>
                   
-                    <Button onClick={() => router.push('/new-trust')} className={styles.button} variant='contained'> Create A Will </Button>
+                    <Button onClick={() => router.push('/contract')} className={styles.button} variant='contained'> Create A Will </Button>
                   
                   </div>
 
