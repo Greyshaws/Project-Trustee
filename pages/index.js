@@ -3,7 +3,7 @@ import React, { useState } from  'react';
 import VizSensor from 'react-visibility-sensor';
 import { Button, Grid, Typography, Card, Fade, Slide, Zoom } from '@mui/material'
 import Head from 'next/head'
-import NavBar from '../src/components/app/Navbar'
+import NavBar from '../src/components/app/Layout/Navbar'
 import styles from '../styles/Home.module.css'
 import PaddedContainer from '../src/components/app/PaddedContainer'
 import { useRouter } from 'next/router'
