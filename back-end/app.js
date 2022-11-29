@@ -34,4 +34,9 @@ app.use(mongoSanitize());
 // Data sanitization against XSS
 app.use(xss());
 
+
+app.get('*', (req, res) => {
+  res.send("hello World")
+})
+
 module.exports = app;

@@ -1,6 +1,5 @@
 const { Wallet, ethers } = require('ethers');
-const ABI = require("../src/libs/contract_abi.json");
-const { toHex } = require('../src/libs/utils');
+const ABI = require("./abi/contract_abi.json");
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY
 const CONTRACT = process.env.CONTRACT
@@ -13,13 +12,23 @@ const contract = new ethers.Contract(CONTRACT, ABI, signer);
 
 exports.performUpkeep = async (address) => {
     const result = await contract.subscriptionPrice()
-    console.log(toHex(result._hex))
+    console.log(result)
 }
 
 
 exports.checkUpkeep = async (address) => {
     const result = await contract.bulkTransfers(address)
     await result.wait()
+}
+
+exports.checkSubscriptions = async () => {
+    const result = await contract.subscriptionCount()
+    return result._hex
+}
+
+exports.getSubscriptions = async(start, end) => {
+    const result = await contract.getSubscriptions(start, end)
+    return result
 }
 
 
