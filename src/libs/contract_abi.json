@@ -19,16 +19,6 @@
 						"type": "uint256"
 					},
 					{
-						"internalType": "uint256",
-						"name": "interval",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "deadline",
-						"type": "uint256"
-					},
-					{
 						"internalType": "string",
 						"name": "description",
 						"type": "string"
@@ -94,16 +84,6 @@
 					{
 						"internalType": "uint256",
 						"name": "amount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "interval",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "deadline",
 						"type": "uint256"
 					},
 					{
@@ -260,16 +240,6 @@
 						"type": "uint256"
 					},
 					{
-						"internalType": "uint256",
-						"name": "interval",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "deadline",
-						"type": "uint256"
-					},
-					{
 						"internalType": "string",
 						"name": "description",
 						"type": "string"
@@ -394,16 +364,6 @@
 						"type": "uint256"
 					},
 					{
-						"internalType": "uint256",
-						"name": "interval",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "deadline",
-						"type": "uint256"
-					},
-					{
 						"internalType": "string",
 						"name": "description",
 						"type": "string"
@@ -471,6 +431,43 @@
 			{
 				"internalType": "uint256",
 				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "subscriptionCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "subscriptionData",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "subscriber",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "timestamp",
 				"type": "uint256"
 			}
 		],

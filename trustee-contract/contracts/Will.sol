@@ -9,12 +9,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 // Please Take my comments seriously
 
 //  Test Beneficiaries
-//  [[true, 0, 100, 2000, 5000, "First", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB"], [true, 0, 100, 2000, 5000, "Second", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB"]]
+//  [[true, 0, 100, "First", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB"], [true, 0, 100, "Second", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB"]]
 //  Update beneficiaries
 //  index: [0]  
-//  beneficiaries: [[true, 0, 100, 2000, 5000, "Third", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB"]]
+//  beneficiaries: [[true, 0, 100, "Third", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB"]]
 //  Add beneficiaries
-//  [[true, 0, 100, 2000, 5000, "First", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB"], [true, 0, 100, 2000, 5000, "Second", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB"]]
+//  [[true, 0, 100, "First", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB"], [true, 0, 100, "Second", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB"]]
 
 
 // Please add the suitable guards to this code patch any vulnerability you find
@@ -25,12 +25,24 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Trustee is ReentrancyGuard, Ownable {
 
+    //cron period time
+    enum Period {
+        MINUTE_5,
+        MINUTE_10,
+        MINUTE_30,
+        HOUR_1,
+        DAY_1,
+        WEEK_1,
+        MONTH_1,
+        MONTH_3,
+        MONTH_6,
+        YEAR_1
+    }
+
     struct Beneficiary {
         bool isNft;
         uint256 tokenId;
         uint256 amount;
-        uint256 interval;
-        uint256 deadline;
         string description;
         address beneficiaryAddress;
         address tokenAddress;
@@ -42,14 +54,28 @@ contract Trustee is ReentrancyGuard, Ownable {
         uint256 deadline;
         bool active;
         uint256 beneficiaryCount;
+        Period period;
+    }
+
+
+    //for tracking subscription
+    struct Subscription {
+        address subscriber;
+        Period period;
+        uint256 price;
     }
 
 
     mapping(address => Trust) private TrustData;
     mapping(address => mapping(uint256 => Beneficiary)) private beneficiaryData;
 
+    //for tracking subscription
+    mapping(uint256 => Subscription) public subscriptionData;
+
     uint256 public subscriptionPrice = 1 ether;
     uint256 public pricePerBeneficiary = 0.001 ether;
+
+    uint256 public subscriptionCount = 0;
 
 
     // This contract address is the one on our server, it's the address that interact with our contact from
@@ -57,7 +83,8 @@ contract Trustee is ReentrancyGuard, Ownable {
     // so that this address always have matic to pay for gas fees.
     address public automator;
 
-    function createTrust (uint256 _interval, string calldata _title, Beneficiary[] calldata _beneficiaries) external {
+    // added period
+    function createTrust (uint256 _interval, string calldata _title, Beneficiary[] calldata _beneficiaries, uint256 period) external {
         require (!TrustData[msg.sender].active, "Address can't have multiple active Trust");
         
         uint256 count = _beneficiaries.length;
@@ -67,7 +94,7 @@ contract Trustee is ReentrancyGuard, Ownable {
             beneficiaryData[msg.sender][i] = _beneficiaries[i];
         }
 
-        TrustData[msg.sender] = Trust(_title, _interval, deadline, true, count);
+        TrustData[msg.sender] = Trust(_title, _interval, deadline, true, count, Period(period));
 
     }
 
@@ -153,7 +180,22 @@ contract Trustee is ReentrancyGuard, Ownable {
 
     // This fuction should increase timer for the will
     function paySubscription () payable external {
-        require(msg.value >= subscriptionPrice, "Amount should be equal to subscripton Price");
+        require(msg.value >= subscriptionPrice, "Amount should be equal to subscription Price");
+        Trust memory trust = TrustData[msg.sender];
+        ++subscriptionCount;        
+        subscriptionData[subscriptionCount] =  Subscription(msg.sender, trust.period, msg.value);
+    }
+
+
+    //for tracking subscription
+    function getSubscriptions (uint256 start, uint256 end) external view returns(Subscription[] memory) {
+        uint256 count = end - start;
+        Subscription[] memory subscription = new Subscription[](count);
+        uint256 counter = 0;
+        for (uint256 i = start; i < end; i++) {
+            subscription[counter++] = subscriptionData[i];
+        }
+        return subscription;
     }
 
     
