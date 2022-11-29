@@ -1,82 +1,51 @@
 import React, { useState, useContext } from "react";
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Unstable_Grid2";
-import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
-import TrustTemplates from "./TrustTemplates";
+import Button from "@mui/material/Button"
+import Grid from "@mui/material/Grid"
+import Beneficiary from "../../contract/Beneficiary";
 import { TrustContext } from "../../../context/trust-context";
 
 
-
-const Step1 = ({ onDone }) => {
-  const [isTemplate, setIsTemplate] = useState(false);
-
-  const trustCtx = useContext(TrustContext)
-  const {trustTemplates}= trustCtx
+const Step1 = () => {
 
 
-  const createNewHandler = () => {
-    setIsTemplate(false)
-    onDone(trustTemplates[0])
-  };
 
-  const chooseTemplateHandler = () => {
-    setIsTemplate(true)
+  const [beneficiaries, setBeneficiaries] = useState([1]);
+
+  
+  
+  const trustCtx = useContext(TrustContext);
+
+  const {workingTrust, addWorkingTrustBeneficiary} = trustCtx
+
+  const {beneficiaryData} = workingTrust
+
+  const addBeneficiary = () => {
+    setBeneficiaries([...beneficiaries, 1])
   }
 
-  const handleSelectedTemplate = (_template) => {
-    onDone(_template)
+  const addBeneficiaryDataHandler = (_beneficiary) => {
+    addWorkingTrustBeneficiary(_beneficiary)
   }
 
-  return (
-    <Box
-      sx={{
-        my: 2,
-        width: "100%",
-      }}
-    >
-      <Grid container spacing={2}>
-        <Grid xs={12} sm={6} md={4}>
-          <Paper
-            variant="outlined"
-            sx={{
-              p: 2,
-              cursor: "pointer",
 
-              "&:hover": {
-                borderColor: "primary.light",
-              },
-            }}
-            onClick={createNewHandler}
-          >
-            <Typography variant="h4">Create New Trust</Typography>
-            <Typography variant="body1">Create New Trust</Typography>
-          </Paper>
-        </Grid>
-        <Grid xs={12} sm={6} md={4}>
-          <Paper
-            variant="outlined"
-            sx={{
-              p: 2,
-              cursor: "pointer",
-              height: "100%",
-              "&:hover": {
-                borderColor: "primary.light",
-              },
-            }}
+    return (
+    <Box>
+      {(beneficiaryData.length === 0) && <Beneficiary /> }
 
-            onClick={chooseTemplateHandler}
-          >
-            <Typography variant="h4">Use a Template</Typography>
-            <Typography variant="body1">Create New Trust</Typography>
-          </Paper>
-        </Grid>
+        {
+            (beneficiaryData.length !== 0) &&  beneficiaries.map((beneficiary, index) => {
+                return <Beneficiary key={index} beneficiary={beneficiaryData[index]} />
+              })
+            }
+      <Grid container item justifyContent={"flex-end"}>
+        <Button variant="contained" onClick={addBeneficiary} sx={{
+                ml: 2
+              }}> Add Beneficiary</Button>
       </Grid>
-
-      {/* Templates */}
-      {isTemplate && <TrustTemplates onSelectTemplate={handleSelectedTemplate}/>}
+       
     </Box>
-  );
+    );
 };
 
 export default Step1;

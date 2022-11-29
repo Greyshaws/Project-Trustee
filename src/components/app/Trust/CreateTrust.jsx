@@ -13,13 +13,10 @@ import {TrustContext} from "../../../context/trust-context"
 //steps
 import Step1 from "./Step1"
 import Step2 from "./Step2"
-import Step3 from "./Step3"
-import Step4 from "./Step4"
 
 const steps = [
   "How would you create one?",
   "Trust Details",
-  "Confirm Trust",
 ];
 
 const optionalSteps = []; // holds the index of steps that are optional
@@ -33,10 +30,6 @@ const CreateTrust = () => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
 
-  const trustCtx = useContext(TrustContext);
-  const { trustTemplates} = trustCtx;
-
-  const [trustTemplate, setTrustTemplate] = React.useState(trustTemplates[0]);
 
 
   // step logic starts */ 
@@ -58,12 +51,6 @@ const CreateTrust = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
   };
-
-  const handleTemplateSelected = (_template) => {
-    setTrustTemplate(_template)
-    handleNext()
-  }
-
   
 
   const handleBack = () => {
@@ -139,9 +126,9 @@ const CreateTrust = () => {
           ) : ( // couple of steps left to complete
             <>
 
-                {(activeStep === 0) ? <Step1 onDone={handleTemplateSelected} /> : null}
-                {(activeStep === 1) ? <Step2 template={trustTemplate} onClickedCreateTrust={handleClickedCreateTrust} /> : null}
-                {(activeStep === 2) ? <Step3 /> : null}
+                {(activeStep === 0) ? <Step1 onDone={handleNext} /> : null}
+                {/* {(activeStep === 1) ? <Step2 template={trustTemplate} onClickedCreateTrust={handleClickedCreateTrust} /> : null} */}
+                
                 
 
                 
