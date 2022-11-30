@@ -168,7 +168,7 @@ contract Trustee is ReentrancyGuard, Ownable {
         require(block.timestamp > trust.deadline, "Not past deadline");
 
         //uint256 amountToSend = TrustData[msg.sender].amount;
-        uint256 count = TrustData[_willOwner].beneficiaryCount;
+        //uint256 count = TrustData[_willOwner].beneficiaryCount;
 
         /*for (uint256 i = 0; i < count; i++) {
             trust[i].transfer(TrustData[_willOwner][i]);
