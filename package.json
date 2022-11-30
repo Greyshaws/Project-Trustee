@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "front-end",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -14,8 +14,13 @@
     "@mui/icons-material": "^5.10.14",
     "@mui/lab": "^5.0.0-alpha.108",
     "@mui/material": "^5.10.14",
+<<<<<<< HEAD
     "@openzeppelin/contracts": "^4.8.0",
+=======
+    "@mui/x-date-pickers": "^5.0.8",
+>>>>>>> 471b7352d12ba0f5a408bb07d027f6f1e0dc4450
     "@walletconnect/web3-provider": "^1.8.0",
+    "dayjs": "^1.11.6",
     "eslint": "8.28.0",
     "eslint-config-next": "13.0.4",
     "ethers": "^5.7.2",
@@ -23,6 +28,7 @@
     "next": "13.0.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-visibility-sensor": "^5.1.1",
     "web3modal": "^1.9.9"
   }
 }
