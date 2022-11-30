@@ -56,7 +56,11 @@ export default function NavDrawer({anchor="left", pages }) {
       <List>
         {pages.map((page, index) => (
           <ListItem key={page.link} disablePadding>
-            <ListItemButton>
+            <ListItemButton sx={{
+              "&:hover": {
+                color: "primary.main"
+              }
+            }}>
               <ListItemIcon>
                 {page.icon}
               </ListItemIcon>
@@ -67,7 +71,7 @@ export default function NavDrawer({anchor="left", pages }) {
       </List>
       <Divider />
       <List>
-        {['Lorem', 'Lorem', 'Lorem'].map((text, index) => (
+        {[].map((text, index) => (
           <ListItem key={`${text}${index}`} disablePadding>
             <ListItemButton>
               <ListItemIcon>

@@ -2,25 +2,19 @@ export const supportedTokens = [
     {
         name: "Polygon (MATIC)",
         symbol: "MATIC",
-        contractAdrress: "",
+        contractAddress: "sadbgfbvdcsafbgdsadf",
         image: "",
     },
     {
-        name: "Polygon (MATIC)",
-        symbol: "MATIC",
-        contractAdrress: "",
+        name: "USD Tether",
+        symbol: "USDT",
+        contractAddress: "safdghjkl;jmhgfbdsadfbgfvds",
         image: "",
     },
     {
-        name: "Polygon (MATIC)",
-        symbol: "MATIC",
-        contractAdrress: "",
-        image: "",
-    },
-    {
-        name: "Polygon (MATIC)",
-        symbol: "MATIC",
-        contractAdrress: "",
+        name: "USD Coin",
+        symbol: "USDC",
+        contractAddress: "sadfbghjmgfdsafbghbfd",
         image: "",
     },
 ]

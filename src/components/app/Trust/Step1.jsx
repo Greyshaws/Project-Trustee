@@ -1,82 +1,166 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Unstable_Grid2";
-import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
-import TrustTemplates from "./TrustTemplates";
-import { TrustContext } from "../../../context/trust-context";
+import Button from "@mui/material/Button"
+import Grid from "@mui/material/Grid"
+import InputLabel from "@mui/material/InputLabel"
+import FormControl from "@mui/material/FormControl"
+import Select from "@mui/material/Select"
+import TextField from "@mui/material/TextField"
+import InputAdornment from "@mui/material/InputAdornment"
+import MenuItem from "@mui/material/MenuItem"
+import Typography from "@mui/material/Typography"
+import TagIcon from "@mui/icons-material/Tag"
+import TitleIcon from '@mui/icons-material/Title';
+import NotesIcon from '@mui/icons-material/Notes';
+// import TimerIcon from '@mui/icons-material/Timer';
+import Beneficiary from "../../contract/Beneficiary";
+import FormHelperText from "@mui/material/FormHelperText"
+
+
+const Step1 = ({onDone, title,
+  description,
+  period,
+  beneficiaryData,
+  onHandleTitleChange,
+  onHandlePeriodChange,
+  onHandleDescriptionChange,
+  onHandleAddBeneficiary,
+  onHandleDeleteBeneficiary, onHandleEditBeneficiary}) => {
 
 
 
-const Step1 = ({ onDone }) => {
-  const [isTemplate, setIsTemplate] = useState(false);
+  const [beneficiaries, setBeneficiaries] = useState([1]);
+  
 
-  const trustCtx = useContext(TrustContext)
-  const {trustTemplates}= trustCtx
-
-
-  const createNewHandler = () => {
-    setIsTemplate(false)
-    onDone(trustTemplates[0])
-  };
-
-  const chooseTemplateHandler = () => {
-    setIsTemplate(true)
+  const addBeneficiary = () => {
+    setBeneficiaries([...beneficiaries, 1])
   }
 
-  const handleSelectedTemplate = (_template) => {
-    onDone(_template)
+
+  const handleSelectPeriod = (e) => {
+    onHandlePeriodChange(e.target.value)
   }
 
-  return (
-    <Box
-      sx={{
-        my: 2,
-        width: "100%",
-      }}
-    >
-      <Grid container spacing={2}>
-        <Grid xs={12} sm={6} md={4}>
-          <Paper
-            variant="outlined"
-            sx={{
-              p: 2,
-              cursor: "pointer",
+  const handleTitleChange = (e) => {
+    onHandleTitleChange(e.target.value)
+  }
 
-              "&:hover": {
-                borderColor: "primary.light",
-              },
-            }}
-            onClick={createNewHandler}
-          >
-            <Typography variant="h4">Create New Trust</Typography>
-            <Typography variant="body1">Create New Trust</Typography>
-          </Paper>
-        </Grid>
-        <Grid xs={12} sm={6} md={4}>
-          <Paper
-            variant="outlined"
-            sx={{
-              p: 2,
-              cursor: "pointer",
-              height: "100%",
-              "&:hover": {
-                borderColor: "primary.light",
-              },
-            }}
+  const handleDescriptionChange = (e) => {
+    onHandleDescriptionChange(e.target.value)
+  }
 
-            onClick={chooseTemplateHandler}
-          >
-            <Typography variant="h4">Use a Template</Typography>
-            <Typography variant="body1">Create New Trust</Typography>
-          </Paper>
+
+  let canCreateTrust = beneficiaryData.length >= 1;
+
+
+  
+
+    return (
+    <Box >
+      <Grid container spacing={2} sx={{
+        mb: 4
+      }}>
+        <Grid item xs={8}>
+        <TextField
+            id="outlined-multiline-flexible-title"
+            label="Title"
+            fullWidth
+            value={title}
+            onChange={handleTitleChange}
+            helperText={"Add a Title"}
+            FormHelperTextProps={{
+              id: "title-helper-text",
+            }}
+            InputLabelProps={{
+              htmlFor: "outlined-multiline-flexible-title",
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">
+                  <TitleIcon />
+                </InputAdornment>
+              ),
+              "aria-describedby": "title-helper-text",
+            }}
+          />
         </Grid>
+        <Grid item xs={4}>
+        <FormControl fullWidth required={true}>
+                <InputLabel id="period-select-label" >Trust Period</InputLabel>
+                <Select  labelId="period-select-label" value={period} label="Trust Period" onChange={handleSelectPeriod}>
+                  <MenuItem value={0}>5 minutes</MenuItem>
+                  <MenuItem value={1}>30 minutes</MenuItem>
+                  <MenuItem value={2}> 1 hour</MenuItem>
+                  <MenuItem value={3}> 12 hours</MenuItem>
+                  <MenuItem value={4}> 1 day</MenuItem>
+                  <MenuItem value={5}> 1 week</MenuItem>
+                  <MenuItem value={6}> 1 month</MenuItem>
+                  <MenuItem value={7}> 3 months</MenuItem>
+                  <MenuItem value={8}> 6 month</MenuItem>
+                </Select>
+                <FormHelperText id="period-select-label">
+              {"Trust Period"}
+            </FormHelperText>
+              </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+        <TextField
+            id="outlined-multiline-flexible"
+            label="Description"
+            fullWidth
+            value={description}
+            onChange={handleDescriptionChange}
+            helperText={"Add a description"}
+            FormHelperTextProps={{
+              id: "description-helper-text",
+            }}
+            InputLabelProps={{
+              htmlFor: "outlined-multiline-flexible",
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">
+                  <NotesIcon />
+                </InputAdornment>
+              ),
+              "aria-describedby": "description-helper-text",
+            }}
+          />
+        </Grid>
+
       </Grid>
 
-      {/* Templates */}
-      {isTemplate && <TrustTemplates onSelectTemplate={handleSelectedTemplate}/>}
+      <Box>
+        <Typography variant="h4" sx={{
+          fontSize: "1.125rem",
+          mt: 0,
+          mb: 4
+        }}>
+          {(beneficiaryData.length < 1) ? "No" : beneficiaryData.length} Added {(beneficiaryData.length <= 1) ? "Beneficiary" : "Beneficiaries"}
+        </Typography>
+      {(beneficiaryData.length === 0) && <Beneficiary onHandleEditBeneficiary={onHandleEditBeneficiary} onHandleAddBeneficiary={onHandleAddBeneficiary} onHandleDeleteBeneficiary={onHandleDeleteBeneficiary} /> }
+
+{
+    (beneficiaryData.length !== 0) &&  beneficiaries.map((beneficiary, index) => {
+        return <Beneficiary key={index} beneficiary={beneficiaryData[index]} onHandleEditBeneficiary={onHandleEditBeneficiary} onHandleAddBeneficiary={onHandleAddBeneficiary} onHandleDeleteBeneficiary={onHandleDeleteBeneficiary} />
+      })
+    }
+<Grid container item justifyContent={"flex-end"}>
+<Button variant="contained" onClick={addBeneficiary} sx={{
+        my: 2, ml: {xs: 0, sm: 2},
+        width: {xs: "100%", sm: "auto"}
+      }}> New Beneficiary</Button>
+
+<Button variant="contained" onClick={() => {onDone()}} disabled={!canCreateTrust} sx={{
+        my: 2, ml: {xs: 0, sm: 2},
+        width: {xs: "100%", sm: "auto"}
+      }}> Create Trust</Button>
+</Grid>
+      </Box>
+      
+       
     </Box>
-  );
+    );
 };
 
 export default Step1;
