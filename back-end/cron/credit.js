@@ -44,18 +44,18 @@ cron.schedule(H1, async () => {
 
 });
 
-// cron.schedule('0 * * * *', async () => {
+cron.schedule('0 * * * *', async () => {
 
-//     console.log("running upkeep 1 hour")
+    console.log("running upkeep 1 hour")
 
-//     await upkeepAction(4)
+    await upkeepAction(4)
 
-// });
+});
 
-// cron.schedule('0 * * * *', async () => {
+cron.schedule('0 * * * *', async () => {
 
-//     console.log("running upkeep 1 hour")
+    console.log("running upkeep 1 hour")
 
-//     await upkeepAction(5)
+    await upkeepAction(5)
 
-// });
+});

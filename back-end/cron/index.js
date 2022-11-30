@@ -1,2 +1,2 @@
-//require('./subscription')
-require('./test')
+require('./subscription')
+require('./upkeep')

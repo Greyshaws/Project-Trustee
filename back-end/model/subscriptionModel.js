@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { subStatus } = require('../utils');
 
 
 const SubscriptionSchema = new mongoose.Schema({
@@ -18,6 +19,18 @@ const SubscriptionSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
     select: false
+  },
+  new: {
+    type: Boolean,
+    default: true
+  },
+  status: {
+    type: String,
+    default: subStatus.subscription,
+    enum: {
+        values: [subStatus.subscription, subStatus.checked, subStatus.activated, subStatus.renewed],
+        message: 'Invalid option'
+    }
   },
   createdAt: {
     type: Date,
