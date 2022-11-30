@@ -1,12 +1,14 @@
 import { Container } from "@mui/material"
 import styles from '../../../styles/App.module.css'
 
-const PaddedContainer = ({children}) => {
+const PaddedContainer = (props) => {
 
     return (
-        <Container className={styles.container} maxWidth="xl">
-            {children}
-        </Container>
+        <div {...props}>
+            <Container className={styles.container} maxWidth="xl">
+                {props.children}
+            </Container>
+        </div>
     )
 } 
 
