@@ -12,6 +12,7 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
+import { useRouter } from 'next/router';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
@@ -25,10 +26,10 @@ import DescriptionIcon from '@mui/icons-material/Description';
 const settings = ['Profile', 'My Trusts', 'Create', 'Logout'];
 
 
-const pagesX = [
+const pages = [
   {
     text: "Home",
-    link: "/new-trust",
+    link: "/",
     icon: <HomeIcon />
   },
   {
@@ -49,14 +50,14 @@ const NavBar = () => {
 
   const {connect, loading, accounts } = useContext(Web3Context);
 
-
+  const router = useRouter()
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
+  const handleClickNavLink = (_link) => {
     setAnchorElNav(null);
-    setToggleNavDrawerIsOpen(false)
+    router.push(`${_link}`)
   };
 
   const handleCloseUserMenu = () => {
@@ -93,7 +94,7 @@ const NavBar = () => {
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }} >
           
-            <NavDrawer pages={pagesX}/>
+            <NavDrawer pages={pages}/>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, color: 'primary.main', mr: 1 }} />
           <Typography
@@ -118,14 +119,26 @@ const NavBar = () => {
 
           {/* Big Screens */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: "flex-end", border: 1 }}>
-            {pagesX.map((page) => (
-              <Button
+            {pages.map((page) => (
+              <Box
                 key={page.link}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 0, display: 'block' }}
+                sx={{ my: 0, mx: 2, display: 'block' }}
               >
-                {page.text}
-              </Button>
+                <Typography sx={{
+                  color: "rgba(0,0,0,0.6)",
+                  "&:hover": {
+                    color: "primary.main"
+                  }
+                }}>
+                  <Link href={page.link} style={{
+                    textDecoration: "none",
+                    color: "inherit"
+                  }}>{page.text}</Link>
+                </Typography>
+
+                
+               
+              </Box>
             ))}
           </Box>
 

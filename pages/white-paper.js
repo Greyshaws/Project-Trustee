@@ -3,7 +3,6 @@ import Head from "next/head";
 import NavBar from "../src/components/app/Layout/Navbar";
 import styles from "../styles/Home.module.css";
 import PaddedContainer from "../src/components/app/PaddedContainer";
-import CreateTrust from "../src/components/app/Trust/CreateTrust";
 import Footer from "../src/components/app/Layout/Footer";
 import { useRouter } from "next/router";
 
@@ -23,10 +22,9 @@ const WhitePaper = () => {
       <main >
         <PaddedContainer>
           <Typography variant="h2" component="h1" gutterBottom>
-            Create a Trust
+            White Paper
           </Typography>
 
-          <CreateTrust />
         </PaddedContainer>
       </main>
       <Footer />

@@ -76,9 +76,11 @@ const Beneficiary = ({
     inputBlurHandler: tokenPercentBlurHandler,
     reset: tokenPercentResetHandler,
   } = useInput((value) => {
+
+    let newValue = value.replace("%", "") + "%"
     let percentRegex = /\b(?<!\.)(?!0+(?:\.0+)?%)(?:\d|[1-9]\d|100)(?:(?<!100)\.\d+)?%/
 
-    return percentRegex.test(value)
+    return percentRegex.test(newValue)
 
   }, (!!beneficiary ? beneficiary.token.tokenPercent : ""));
 
