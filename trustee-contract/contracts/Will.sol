@@ -6,6 +6,23 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+// Please Take my comments seriously
+
+//  Test Beneficiaries
+//  [[true, 0, 100, "First", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB"], [true, 0, 100, "Second", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB"]]
+//  Update beneficiaries
+//  index: [0]  
+//  beneficiaries: [[true, 0, 100, "Third", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB"]]
+//  Add beneficiaries
+//  [[true, 0, 100, "First", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB"], [true, 0, 100, "Second", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB", "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB"]]
+
+
+// Please add the suitable guards to this code patch any vulnerability you find
+// Please don't change the names or parameter of any function here if you must do that,
+// please inform me so i update it on the front-end, add events to the contract,
+// Add as many fuctions and variable as you need, 
+
+
 contract Trustee is ReentrancyGuard, Ownable {
 
     //cron period time
@@ -28,19 +45,18 @@ contract Trustee is ReentrancyGuard, Ownable {
         uint256 amount;
         string description;
         address beneficiaryAddress;
-        address NftAddress;
+        address tokenAddress;
     }
-
-    struct Trust{
-        uint256 deadline;
-        uint256 duration;
-        uint256 amount;
+    
+    struct Trust {
         string title;
-        string description;
+        uint256 interval;
+        uint256 deadline;
         bool active;
         uint256 beneficiaryCount;
         Period period;
     }
+
 
     //for tracking subscription
     struct Subscription {
@@ -49,8 +65,9 @@ contract Trustee is ReentrancyGuard, Ownable {
         uint256 price;
     }
 
-    mapping(address => Trust) public TrustData;
-    mapping(address => mapping(uint256 => Beneficiary)) private BeneficiaryData;
+
+    mapping(address => Trust) private TrustData;
+    mapping(address => mapping(uint256 => Beneficiary)) private beneficiaryData;
 
     //for tracking subscription
     mapping(uint256 => Subscription) public subscriptionData;
@@ -60,77 +77,62 @@ contract Trustee is ReentrancyGuard, Ownable {
 
     uint256 public subscriptionCount = 0;
 
+
     // This contract address is the one on our server, it's the address that interact with our contact from
     // time to time, my idea is that this contract should be credited with some percentage matic once a user pays
     // so that this address always have matic to pay for gas fees.
     address public automator;
 
-    
-    //event CreateTrust(address indexed _owner, address _beneficiary, uint256 value, uint256 deadline, uint256 duration, string description);
-    //event ActivateTrust(address indexed _owner, address _beneficiary, uint256 value, uint256 deadline);
-    //event AddAdditionalFunds(address indexed _owner, uint256 newFunds, uint256 totalValue, uint256 deadline);
-
-    //at the expiration of the deadline, the funds will be released to the beneficiary's address.
-    function createTrust(uint256 _duration, Beneficiary[] calldata _beneficiaries, string calldata _description, string calldata _title, uint256 period) payable external{
-        require(msg.value > 0, "Insufficient funds to create trust");
-        require(_duration > 0, "Set duration");
-        //require(msg.sender != _beneficiaries, "User cannot be beneficiary");
-        require(!TrustData[msg.sender].active, "Address can't have multiple active trusts");
-
+    // added period
+    function createTrust (uint256 _interval, string calldata _title, Beneficiary[] calldata _beneficiaries, uint256 period) external {
+        require (!TrustData[msg.sender].active, "Address can't have multiple active Trust");
+        
         uint256 count = _beneficiaries.length;
-        uint256 _deadline = block.timestamp + _duration;
+        uint256 deadline = block.timestamp + _interval;
 
         for (uint256 i = 0; i < count; i++) {
-            BeneficiaryData[msg.sender][i] = _beneficiaries[i];
+            beneficiaryData[msg.sender][i] = _beneficiaries[i];
         }
 
-        TrustData[msg.sender] = Trust(_deadline, _duration, msg.value, _title, _description, true, count, Period(period));
-
-        //emit CreateTrust(msg.sender, _beneficiary, msg.value, _deadline, _duration, _description);
+        TrustData[msg.sender] = Trust(_title, _interval, deadline, true, count, Period(period));
 
     }
 
-    //get Trust Details
-    function getMyTrust() external view onlyOwner returns(Trust memory) {
+
+    function getMyTrust () external view returns(Trust memory) {
         return TrustData[msg.sender];
     }
 
-     // protect against indexes that are out of bound
+
+    // protect against indexes that are out of bound
     function updateMyTrustBeneficiaries (uint256[] calldata _indexes, Beneficiary [] calldata _beneficiaries) public {
         uint256 count = TrustData[msg.sender].beneficiaryCount;
         for (uint256 i = 0; i < _indexes.length; i++) {
             if (_indexes[i] > count) continue;
-            BeneficiaryData[msg.sender][_indexes[i]] = _beneficiaries[i];
+            beneficiaryData[msg.sender][_indexes[i]] = _beneficiaries[i];
         }
     }
 
-    function addToMyTrustBeneficiaries (Beneficiary [] calldata _beneficiaries) onlyOwner public  {
+    function addToMyTrustBeneficiaries (Beneficiary [] calldata _beneficiaries) public  {
         uint256 count = TrustData[msg.sender].beneficiaryCount;
         for (uint256 i = 0; i < _beneficiaries.length; i++) {
-            BeneficiaryData[msg.sender][count + i] = _beneficiaries[i];
+            beneficiaryData[msg.sender][count + i] = _beneficiaries[i];
         }
     }
 
-    function getMyTrustBeneficiaries () public view onlyOwner returns(Beneficiary [] memory) {
+    function getMyTrustBeneficiaries () public view returns(Beneficiary [] memory) {
+        
         uint256 count = TrustData[msg.sender].beneficiaryCount;
+
         Beneficiary[] memory beneficiaries = new Beneficiary[](count);
+
         for (uint256 i = 0; i < count; i++) {
-            beneficiaries[i] = BeneficiaryData[msg.sender][i];
+            beneficiaries[i] = beneficiaryData[msg.sender][i];
         }
+        
         return beneficiaries;
     }
 
-    //deposit additional funds
-    function addAdditionalFunds() onlyOwner payable external{
-        Trust storage userDetails = TrustData[msg.sender];
-        require(userDetails.amount > 0, "Not enough ETH");
-        require(block.timestamp <= userDetails.deadline, "Past deadline already");
-        require(msg.value > 0, "Insufficient funds to create trust");
-
-        userDetails.amount += msg.value;
-
-        //emit AddAdditionalFunds(msg.sender, msg.value, userDetails.amount, userDetails.deadline);
-    }
 
     //NFT Section
     function isNftApproved (address _nftAddress, uint256 _tokenId) public view returns(bool) {
@@ -160,25 +162,20 @@ contract Trustee is ReentrancyGuard, Ownable {
         automator = _automator;
     }
 
+
+    //  Codes that should be implemented
+    //  You should add more and can change the names and paramenters of the functions
+
     // transfer asset to beneficiaries
     // implement for NFTs and Tokens
-    function bulkTransfers (address _willOwner) public view {
+    function bulkTransfers (address _willOwner) public {
         Trust memory trust = TrustData[_willOwner];
-        require(trust.amount > 0);
-        require(block.timestamp > trust.deadline, "Not past deadline");
-
-        //uint256 amountToSend = TrustData[msg.sender].amount;
-        uint256 count = TrustData[_willOwner].beneficiaryCount;
-
-        /*for (uint256 i = 0; i < count; i++) {
-            trust[i].transfer(TrustData[_willOwner][i]);
-        }*/
         //Beneficiary memory beneficiaryData[_willOwner][_indexes[i]] = _beneficiaries[i];
 
     }
 
     function singleTransfer (address _willOwner, uint256 _beneficiaryIndex) public {
-        Beneficiary memory beneficiary =  BeneficiaryData[_willOwner][_beneficiaryIndex];
+        Beneficiary memory beneficiary =  beneficiaryData[_willOwner][_beneficiaryIndex];
     }
 
     // This fuction should increase timer for the will
@@ -200,5 +197,6 @@ contract Trustee is ReentrancyGuard, Ownable {
         }
         return subscription;
     }
-}
 
+    
+}
