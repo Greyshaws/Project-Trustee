@@ -1,4 +1,5 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import useInput from "../../hooks/use-input"
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
@@ -15,63 +16,198 @@ import {
   InputAdornment,
 } from "@mui/material";
 import TagIcon from "@mui/icons-material/Tag";
-import { TrustContext } from "../../context/trust-context";
+import { supportedTokens } from "../../libs/data";
 
-const Beneficiary = ({added=false, beneficiary}) => {
-  const [isNFT, setIsNFT] = useState(false);
-  const [token, setToken] = useState("");
-  const [description, setDescription] = useState("");
-  const [address, setAddress] = useState("");
-  const [tokenPercent, setTokenPercent] = useState(0);
 
-  const trustCtx = useContext(TrustContext)
-  const { addWorkingTrustBeneficiary,
-    deleteWorkingTrustBeneficiary} = trustCtx
+const Beneficiary = ({
+  beneficiary = null,
+  onHandleAddBeneficiary,
+  onHandleDeleteBeneficiary,
+  onHandleEditBeneficiary
+}) => {
 
-//   console.log(beneficiary)
   
 
+  const {
+    value: isNFT,
+    isValid: isNFTIsValid,
+    hasError: isNFTHasError,
+    valueChangeHandler: isNFTChangeHandler,
+    inputBlurHandler: isNFTBlurHandler,
+    reset: isNFTResetHandler,
+  } = useInput((value) => true, (!!beneficiary ? beneficiary.token.isNFT : false));
 
-  const assetType = (e) => {
-    setIsNFT(e.target.value);
-  };
+  const {
+    value: beneficiaryAddress,
+    isValid: beneficiaryAddressIsValid,
+    hasError: beneficiaryAddressHasError,
+    valueChangeHandler: beneficiaryAddressChangeHandler,
+    inputBlurHandler: beneficiaryAddressBlurHandler,
+    reset: beneficiaryAddressResetHandler,
+  } = useInput((value) => {
+    let addressReg = /[a-zA-Z]+/
+    // return (value.trim().length >= "") && (addressReg.test(value))
+    return true
+  }, (!!beneficiary ? beneficiary.beneficiaryAddress : ""));
 
-  const tokenType = (e) => {
-    setToken(e.target.value);
-  };
+  const {
+    value: contractAddress,
+    isValid: contractAddressIsValid,
+    hasError: contractAddressHasError,
+    valueChangeHandler: contractAddressChangeHandler,
+    inputBlurHandler: contractAddressBlurHandler,
+    reset: contractAddressResetHandler,
+  } = useInput((value) => value.trim() !== "", (!!beneficiary ? beneficiary.token.contractAddress : ""));
 
-  const handleAddressChange = (e) => {
-    setAddress(e.target.value);
-  };
+   const {
+    value: description,
+    isValid: descriptionIsValid,
+    hasError: descriptionHasError,
+    valueChangeHandler: descriptionChangeHandler,
+    inputBlurHandler: descriptionBlurHandler,
+    reset: descriptionResetHandler,
+  } = useInput((value) => true, (!!beneficiary ? beneficiary.description : ""));
 
-  const handleDescriptionChange = (e) => {
-    setDescription(e.target.value);
-  };
+  const {
+    value: tokenPercent,
+    isValid: tokenPercentIsValid,
+    hasError: tokenPercentHasError,
+    valueChangeHandler: tokenPercentChangeHandler,
+    inputBlurHandler: tokenPercentBlurHandler,
+    reset: tokenPercentResetHandler,
+  } = useInput((value) => {
+    let percentRegex = /\b(?<!\.)(?!0+(?:\.0+)?%)(?:\d|[1-9]\d|100)(?:(?<!100)\.\d+)?%/
 
-  const handleDeleteBeneficiary = () => {
-    deleteWorkingTrustBeneficiary(address)
+    return percentRegex.test(value)
+
+  }, (!!beneficiary ? beneficiary.token.tokenPercent : ""));
+
+  const {
+    value: tokenID,
+    isValid: tokenIDIsValid,
+    hasError: tokenIDHasError,
+    valueChangeHandler: tokenIDChangeHandler,
+    inputBlurHandler: tokenIDBlurHandler,
+    reset: tokenIDResetHandler,
+  } = useInput((value) => (isNFT ? (value.trim() !== "") : true), (!!beneficiary ? beneficiary.token.tokenID : ""));
+
+
+
+
+  const [saved, setSaved] = useState(
+    !!beneficiary ? beneficiary.state.saved : false
+  );
+  const [added, setAdded] = useState(
+    !!beneficiary ? beneficiary.state.added : false
+  );
+
+  const [approved, setApproved] = useState(false);
+
+
+  const isEditing = (saved === false) && (added === true)
+
+ 
+
+  
+    /* This useEffect hook updates the UI to know when someone is editing or not */
+  useEffect(() => {
+    const valuesAreEqualToSavedBeneficiary = () => {
+      if (!!beneficiary === false) {
+        return false
+      }
+      let isNFTIsSame = isNFT === beneficiary.token.isNFT
+      let contractAddressIsSame = contractAddress === beneficiary.token.contractAddress
+      let tokenPercentIsSame =  tokenPercent === beneficiary.token.tokenPercent
+       let beneficiaryAddressIsSame = beneficiaryAddress === beneficiary.beneficiaryAddress
+       let tokenIDIsSame = tokenID === beneficiary.token.tokenID
+       let descriptionIsSame = description === beneficiary.description
+  
+      // console.log("red:, ", (isNFTIsSame && contractAddressIsSame && tokenPercentIsSame && beneficiaryAddressIsSame && tokenIDIsSame && descriptionIsSame))
+       return (isNFTIsSame && contractAddressIsSame && tokenPercentIsSame && beneficiaryAddressIsSame && tokenIDIsSame && descriptionIsSame)
+    }
+    setSaved(valuesAreEqualToSavedBeneficiary())
+  }, [isNFT, description, contractAddress, tokenPercent, beneficiaryAddress, tokenID, beneficiary])
+  
+
+  let formIsValid = false;
+
+  if (isNFTIsValid && beneficiaryAddressIsValid && tokenIDIsValid && tokenPercentIsValid && descriptionIsValid && contractAddressIsValid) {
+    formIsValid = true;
   }
 
+  let formHasError = false
+
+  if (isNFTHasError || beneficiaryAddressHasError || tokenIDHasError || tokenPercentHasError || descriptionHasError || contractAddressHasError) {
+    formHasError = true;
+  }
+
+  
+  // console.log(formIsValid, formHasError)
+
+
+  const handleDeleteBeneficiary = () => {
+    onHandleDeleteBeneficiary(beneficiaryAddress);
+  };
+
   const handleAddBeneficiary = () => {
-    // address check 
+    
+    if (!formIsValid || formHasError) {
+      return;
+    }
 
+    onHandleAddBeneficiary({
+      beneficiaryAddress: beneficiaryAddress,
 
-    addWorkingTrustBeneficiary({
-        beneficiaryAddress: address,
+      token: {
+        isNFT: isNFT,
+        contractAddress: contractAddress,
+        tokenID: tokenID,
+        tokenPercent: tokenPercent,
+      },
 
-    token: {
-          isNFT: {isNFT}, 
-          tokenAddress: "ihgyftresadfghjkljhgfd",
-          tokenID: "",
-        },
-    percent: tokenPercent,
-    description: description,
-    })
+      description: description,
+      state: {
+        saved: true,
+        added: true,
+      }
+      
+    });
+    setSaved(true)
+  };
+
+  const handleSaveEdit = () => {
+    if (!formIsValid || formHasError) {
+      return;
+    }
+
+    onHandleEditBeneficiary({
+      beneficiaryAddress: beneficiaryAddress,
+
+      token: {
+        isNFT: isNFT,
+        contractAddress: contractAddress,
+        tokenID: tokenID,
+        tokenPercent: tokenPercent,
+      },
+
+      description: description,
+      state: {
+        saved: true,
+        added: true,
+      }
+      
+    });
+    setSaved(true)
   }
 
   const getApproval = () => {
-    console.log("get approval")
-  }
+    console.log("get approval");
+    setApproved(true)
+  };
+
+
+
+  
 
   return (
     <Box
@@ -81,15 +217,17 @@ const Beneficiary = ({added=false, beneficiary}) => {
     >
       <Grid container spacing={2}>
         <Grid item xs={12} md={7}>
-          <FormControl fullWidth sx={{ width: "100%" }}>
+          <FormControl fullWidth sx={{ width: "100%" }} error={beneficiaryAddressHasError}>
             <InputLabel htmlFor="outlined-adornment-address">
               Beneficiary Address
             </InputLabel>
             <OutlinedInput
               id="outlined-adornment-address"
               aria-describedby="my-helper-text"
-              value={address}
-              onChange={handleAddressChange}
+              value={beneficiaryAddress}
+              onChange={beneficiaryAddressChangeHandler}
+              onBlur={beneficiaryAddressBlurHandler}
+              
               endAdornment={
                 <IconButton aria-label="wallet" edge="end">
                   <AccountBalanceWalletOutlinedIcon />
@@ -98,7 +236,7 @@ const Beneficiary = ({added=false, beneficiary}) => {
               label="Beneficiary Address"
             />
             <FormHelperText id="my-helper-text">
-              Your Beneficiary Address
+              {beneficiaryAddressHasError ? "Invalid Address" : "Your Beneficiary Address"}
             </FormHelperText>
           </FormControl>
         </Grid>
@@ -106,51 +244,97 @@ const Beneficiary = ({added=false, beneficiary}) => {
         <Grid item xs={12} md={5}>
           <Grid container spacing={2}>
             <Grid item xs={4}>
-              <FormControl fullWidth>
+              <FormControl fullWidth error={isNFTHasError}>
                 <InputLabel>Asset Type</InputLabel>
-                <Select value={isNFT} label="Asset Type" onChange={assetType}>
+                <Select value={isNFT} label="Asset Type" aria-describedby="asset-type-helper-text" onChange={isNFTChangeHandler} onBlur={isNFTBlurHandler}>
                   <MenuItem value={false}>Token</MenuItem>
                   <MenuItem value={true}>NFT</MenuItem>
                 </Select>
+                <FormHelperText id="asset-type-helper-text">
+              {"NFT or Cryptocurrency"}
+            </FormHelperText>
               </FormControl>
             </Grid>
 
             <Grid item xs={4}>
-              <FormControl fullWidth>
+              <FormControl fullWidth error={contractAddressHasError}>
                 {isNFT ? (
                   <>
                     <InputLabel> {"Contract Address"}</InputLabel>
                     <OutlinedInput
-                      id="outlined-adornment-address"
+                      id="outlined-adornment-contract-address"
                       label="Contract Address"
+                      aria-describedby="nft-address-helper-text"
+                      onClick={beneficiaryAddressChangeHandler}
+                      onBlur={beneficiaryAddressBlurHandler}
                     />
+                    <FormHelperText id="nft-address-helper-text">
+              {"Paste the NFT contract address"}
+            </FormHelperText>
                   </>
                 ) : (
                   <>
                     <InputLabel> {isNFT ? "NFT" : "Token"}</InputLabel>
-                    <Select label="Asset" value={token} onChange={tokenType}>
-                      <MenuItem value={"USDT Address"}>USDT</MenuItem>
-                      <MenuItem value={"USDC Address "}>USDC</MenuItem>
+                    <Select
+                      label="Asset"
+                      value={contractAddress}
+                      onChange={contractAddressChangeHandler}
+                      onBlur={ contractAddressBlurHandler}
+                      aria-describedby="token-address-helper-text"
+                    >
+                      {supportedTokens.map((_token) => (
+                        <MenuItem key={_token.symbol} value={_token.contractAddress}>
+                          {_token.symbol}
+                        </MenuItem>
+                      ))}
                     </Select>
+                    <FormHelperText id="token-address-helper-text">
+              {"Select a Cryptocurrency"}
+            </FormHelperText>
                   </>
                 )}
               </FormControl>
             </Grid>
 
-            <Grid item xs={4}>
-              <FormControl fullWidth sx={{ width: "100%" }}>
-                <InputLabel htmlFor="outlined-adornment-address">
-                  {isNFT ? "Token Id" : "% Token"}
-                </InputLabel>
-                <OutlinedInput
-                  id="outlined-adornment-address"
-                  aria-describedby="my-helper-text"
-                  //   value={beneficiaryAddress}
-                  //   onChange={handleAddressChange}
-                  label="Beneficiary Address"
-                />
-              </FormControl>
-            </Grid>
+            {isNFT ? (
+              <Grid item xs={4}>
+                <FormControl fullWidth sx={{ width: "100%" }} error={tokenIDHasError}>
+                  <InputLabel htmlFor="outlined-adornment-token-id">
+                    Token Id
+                  </InputLabel>
+                  <OutlinedInput
+                    id="outlined-adornment-token-id"
+                    aria-describedby="token-id-helper-text"
+                    value={tokenID}
+                    onChange={tokenIDChangeHandler}
+                    onBlur={tokenIDBlurHandler}
+                    label="Token ID"
+                  />
+                  <FormHelperText id="token-id-helper-text">
+              {"Token ID E.g 8001"}
+            </FormHelperText>
+                </FormControl>
+              </Grid>
+            ) : (
+              <Grid item xs={4}>
+                <FormControl fullWidth sx={{ width: "100%" }} error={tokenPercentHasError}>
+                  <InputLabel htmlFor="outlined-adornment-percent-token">
+                    % Token
+                  </InputLabel>
+                  <OutlinedInput
+                    id="outlined-adornment-percent-token"
+                    aria-describedby="token-percent-helper-text"
+                    value={tokenPercent}
+                    onChange={tokenPercentChangeHandler}
+                    onBlur={tokenPercentBlurHandler}
+                    label="% Token"
+                  />
+                  <FormHelperText id="token-percent-helper-text">
+              {"E.g 20%, 34,567%"}
+            </FormHelperText>
+                </FormControl>
+              </Grid>
+            )}
           </Grid>
         </Grid>
 
@@ -164,17 +348,18 @@ const Beneficiary = ({added=false, beneficiary}) => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            id="outlined-multiline-flexible"
+            id="outlined-multiline-flexible-beneficiary-desc"
             label="Description"
             fullWidth
             value={description}
-            onChange={handleDescriptionChange}
+            onChange={descriptionChangeHandler}
+            onBlur={descriptionBlurHandler}
             helperText={"Add a description"}
             FormHelperTextProps={{
-              id: "description-helper-text",
+              id: "beneficiary-description-text",
             }}
             InputLabelProps={{
-              htmlFor: "outlined-multiline-flexible",
+              htmlFor: "outlined-multiline-flexible-beneficiary-desc",
             }}
             InputProps={{
               endAdornment: (
@@ -182,11 +367,10 @@ const Beneficiary = ({added=false, beneficiary}) => {
                   <TagIcon />
                 </InputAdornment>
               ),
-              "aria-describedby": "description-helper-text",
+              "aria-describedby": "beneficiary-description-text",
             }}
           />
         </Grid>
-
       </Grid>
 
       <Grid
@@ -196,29 +380,40 @@ const Beneficiary = ({added=false, beneficiary}) => {
         sx={{
           my: 2,
         }}
-      ><Button
-      variant={"outlined"}
-    >
-      Grant Approval
-    </Button>
-         <Button
+      >
+        {!approved && <Button  variant={"outlined"} onClick={getApproval}>Grant Approval</Button>}
+        
+        
+        {!added && <Button
           variant={"outlined"}
           sx={{
             ml: 2,
           }}
-          onClick={handleAddBeneficiary }
+          disabled={formHasError}
+          onClick={handleAddBeneficiary}
         >
-          { "Add Beneficiary"} 
-        </Button>
-        <Button
+          {"Add Beneficiary"}
+        </Button>}
+        { added && <Button
           variant={"outlined"}
           sx={{
             ml: 2,
           }}
+          color="error"
           onClick={handleDeleteBeneficiary}
         >
-          { "Delete Beneficiary"} 
-        </Button>
+          {"Delete"}
+        </Button>}
+
+        { isEditing && <Button
+          variant={"outlined"}
+          sx={{
+            ml: 2,
+          }}
+          onClick={handleSaveEdit}
+        >
+          {"Save Edit"}
+        </Button> }
       </Grid>
     </Box>
   );

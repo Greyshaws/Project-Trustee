@@ -31,6 +31,7 @@ export const TrustContext = React.createContext({
 
 const TrustContextProvider = ({children}) => {
   const [workingTrust, setWorkingTrust] = useState({
+    title: "",
         beneficiaryData: [],
         window: '',
         description: '',
