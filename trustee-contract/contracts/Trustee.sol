@@ -1,11 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-<<<<<<< HEAD
-//import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-
-contract Trustee {
-=======
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
@@ -26,7 +21,6 @@ contract Trustee is ReentrancyGuard, Ownable {
         MONTH_6,
         YEAR_1
     }
->>>>>>> 79b87c31d7809255df6c6e35b4fff236567ee51b
 
     struct Beneficiary {
         bool isNft;
@@ -70,15 +64,49 @@ contract Trustee is ReentrancyGuard, Ownable {
     // time to time, my idea is that this contract should be credited with some percentage matic once a user pays
     // so that this address always have matic to pay for gas fees.
     address public automator;
+    uint256 accumulator;
 
     
     //event CreateTrust(address indexed _owner, address _beneficiary, uint256 value, uint256 deadline, uint256 duration, string description);
     //event ActivateTrust(address indexed _owner, address _beneficiary, uint256 value, uint256 deadline);
     //event AddAdditionalFunds(address indexed _owner, uint256 newFunds, uint256 totalValue, uint256 deadline);
 
+    function periodInSecs() private view returns (Period){
+        // for (uint256 i = 0; i < type(Period).max; i++) {
+            
+        // }
+        // string memory length = type(Period).max;
+        return type(Period).max;
+    // console.log(Period(_period));
+    }
+    
+    function trustStatus() public view returns(bool, uint256){
+       bool deadline;
+       if(TrustData[msg.sender].deadline == block.timestamp){
+        deadline = true;
+       }else{
+        deadline = false;
+       }
+    return (deadline, TrustData[msg.sender].beneficiaryCount);
+    }
+
+
+    modifier transfer {
+        if(msg.value > 0){
+        accumulator += (msg.value * 50 / 100);
+        _;
+        }else{
+            revert("Insufficient funds to create trust");
+        }
+    }
+
+    modifier subscriptionCheck {
+        require(msg.value >= subscriptionPrice, "Amount should be equal to subscription Price");
+        _;
+    }
+
     //at the expiration of the deadline, the funds will be released to the beneficiary's address.
-    function createTrust(uint256 _duration, Beneficiary[] calldata _beneficiaries, string calldata _description, string calldata _title, uint256 period) payable external{
-        require(msg.value > 0, "Insufficient funds to create trust");
+    function createTrust(uint256 _duration, Beneficiary[] calldata _beneficiaries, string calldata _description, string calldata _title, uint256 _period) payable external transfer{
         require(_duration > 0, "Set duration");
         //require(msg.sender != _beneficiaries, "User cannot be beneficiary");
         require(!TrustData[msg.sender].active, "Address can't have multiple active trusts");
@@ -90,14 +118,14 @@ contract Trustee is ReentrancyGuard, Ownable {
             BeneficiaryData[msg.sender][i] = _beneficiaries[i];
         }
 
-        TrustData[msg.sender] = Trust(_deadline, _duration, msg.value, _title, _description, true, count, Period(period));
+        TrustData[msg.sender] = Trust(_deadline, _duration, msg.value, _title, _description, true, count, Period(_period));
 
         //emit CreateTrust(msg.sender, _beneficiary, msg.value, _deadline, _duration, _description);
 
     }
 
     //get Trust Details
-    function getMyTrust() external view onlyOwner returns(Trust memory) {
+    function getMyTrust() external view returns(Trust memory) {
         return TrustData[msg.sender];
     }
 
@@ -110,14 +138,14 @@ contract Trustee is ReentrancyGuard, Ownable {
         }
     }
 
-    function addToMyTrustBeneficiaries (Beneficiary [] calldata _beneficiaries) onlyOwner public  {
+    function addToMyTrustBeneficiaries (Beneficiary [] calldata _beneficiaries) public  {
         uint256 count = TrustData[msg.sender].beneficiaryCount;
         for (uint256 i = 0; i < _beneficiaries.length; i++) {
             BeneficiaryData[msg.sender][count + i] = _beneficiaries[i];
         }
     }
 
-    function getMyTrustBeneficiaries () public view onlyOwner returns(Beneficiary [] memory) {
+    function getMyTrustBeneficiaries () public view returns(Beneficiary [] memory) {
         uint256 count = TrustData[msg.sender].beneficiaryCount;
         Beneficiary[] memory beneficiaries = new Beneficiary[](count);
         for (uint256 i = 0; i < count; i++) {
@@ -127,11 +155,10 @@ contract Trustee is ReentrancyGuard, Ownable {
     }
 
     //deposit additional funds
-    function addAdditionalFunds() onlyOwner payable external{
+    function addAdditionalFunds() payable external transfer{
         Trust storage userDetails = TrustData[msg.sender];
         require(userDetails.amount > 0, "Not enough ETH");
         require(block.timestamp <= userDetails.deadline, "Past deadline already");
-        require(msg.value > 0, "Insufficient funds to create trust");
 
         userDetails.amount += msg.value;
 
@@ -188,10 +215,10 @@ contract Trustee is ReentrancyGuard, Ownable {
     }
 
     // This fuction should increase timer for the will
-    function paySubscription () payable external {
-        require(msg.value >= subscriptionPrice, "Amount should be equal to subscription Price");
+    function paySubscription () payable external transfer subscriptionCheck {
         Trust memory trust = TrustData[msg.sender];
-        ++subscriptionCount;        
+        ++subscriptionCount;
+
         subscriptionData[subscriptionCount] =  Subscription(msg.sender, trust.period, msg.value);
     }
 

@@ -27,6 +27,8 @@ async function main() {
   const deployedContract = await trusteeContract.deploy();
   await deployedContract.deployed();
   console.log("Trustee contract address:", deployedContract.address);
+  const txn = await deployedContract.periodInSecs();
+  console.log(txn);
   const deployedCloneContract = await cloneContract.deploy(
     deployedContract.address
   );
