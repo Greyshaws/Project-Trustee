@@ -10,10 +10,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
     "dotenv": "^16.0.3"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "@nomiclabs/buidler": "^1.4.8",
     "hardhat": "^2.12.2"
   }
 }
