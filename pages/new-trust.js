@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from "@mui/material";
+import { Button, Card, Grid, Typography } from "@mui/material";
 import Head from "next/head";
 import NavBar from "../src/components/app/Layout/Navbar";
 import styles from "../styles/Home.module.css";
@@ -23,13 +23,11 @@ const NewTrust = () => {
       </header>
       
 
-      <main style={{minHeight: "100vh"}}>
+      <main className={styles.background} style={{minHeight: "100vh"}}>
         <PaddedContainer>
-          <Typography variant="h2" component="h1" gutterBottom>
-            Create a Trust
-          </Typography>
-
-          <CreateTrust />
+          <Card>
+            <CreateTrust />
+          </Card>
         </PaddedContainer>
       </main>
       <Footer />

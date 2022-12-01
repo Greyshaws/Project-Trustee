@@ -8,6 +8,7 @@ import styles from '../styles/Home.module.css'
 import PaddedContainer from '../src/components/app/PaddedContainer'
 import { useRouter } from 'next/router'
 import ProductCard from '../src/components/home/ProductCard';
+import Footer from '../src/components/app/Layout/Footer';
 
 
 
@@ -56,7 +57,7 @@ const Home = () => {
                       Let your loved ones inherit your digital asset
                     </Typography>
                   
-                    <Button onClick={() => router.push('/contract')} className={styles.button} variant='contained'> Create A Will </Button>
+                    <Button onClick={() => router.push('/new-trust')} className={styles.button} variant='contained'> Create A Will </Button>
                   
                   </div>
 
@@ -120,6 +121,8 @@ const Home = () => {
         </PaddedContainer>
 
       </div>
+
+      <Footer />
 
     </div>
   )

@@ -159,86 +159,22 @@ const CreateTrust = () => {
     <Box>
       <Container>
         <Box sx={{ width: "100%" }}>
-          <Stepper activeStep={activeStep} sx={{
-            py: 2,
-            mb: 2
-          }}>
-            {steps.map((label, index) => {
-              const stepProps = {};
-              const labelProps = {};
-              if (isStepOptional(index)) {
-                labelProps.optional = (
-                  <Typography variant="caption">Optional</Typography>
-                );
-              }
-              if (isStepSkipped(index)) {
-                stepProps.completed = false;
-              }
-              return (
-                <Step key={label} {...stepProps} >
-                  <StepLabel {...labelProps}>{label}</StepLabel>
-                </Step>
-              );
-            })}
-          </Stepper>
-
-          {activeStep === steps.length ? ( // If All stepps are completed
-            <>
-              <Typography sx={{ mt: 2, mb: 1 }}>
-                All Done - you&apos;ve created a new trust.
-              </Typography>
-              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                <Box sx={{ flex: "1 1 auto" }} />
-                <Button onClick={handleReset}>Got to account</Button>
-              </Box>
-            </>
-          ) : ( // couple of steps left to complete
-            <>
-
-                {(activeStep === 0) ? <Step1 
-                onDone={handleConpleteStep} 
-                title={title}
-                description={description}
-                period={period}
-                beneficiaryData={beneficiaryData}
-                onHandleTitleChange={handleTitleChange}
-                onHandlePeriodChange={handlePeriodChange}
-                onHandleDescriptionChange={handleDescriptionChange}
-                onHandleAddBeneficiary={handleAddBeneficiary}
-                onHandleDeleteBeneficiary={handleDeleteBeneficiary}
-                onHandleEditBeneficiary={handleEditBeneficiary}
-                /> : null}
+    
+          <Step1 
+            onDone={handleConpleteStep} 
+            title={title}
+            description={description}
+            period={period}
+            beneficiaryData={beneficiaryData}
+            onHandleTitleChange={handleTitleChange}
+            onHandlePeriodChange={handlePeriodChange}
+            onHandleDescriptionChange={handleDescriptionChange}
+            onHandleAddBeneficiary={handleAddBeneficiary}
+            onHandleDeleteBeneficiary={handleDeleteBeneficiary}
+            onHandleEditBeneficiary={handleEditBeneficiary}
+              /> 
 
 
-                {(activeStep === 1) ? <Step2   /> : null}
-                
-                
-
-                
-            
-                {/* Stepper Controls */}
-              <Box sx={{ display: "flex", flexDirection: "row", pt: 2}} >
-                <Button
-                  color="inherit"
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  sx={{ mr: 1 }}
-                >
-                  Back
-                </Button>
-                <Box sx={{ flex: "1 1 auto" }} />
-                {isStepOptional(activeStep) && (
-                  <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                    Skip
-                  </Button>
-                )}
-
-               <Button onClick={handleNext} disabled={!canShowNext}>
-                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                </Button>
-              </Box>
-            </>
-          )}
         </Box>
       </Container>
     </Box>

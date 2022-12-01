@@ -14,10 +14,6 @@ export default function Toast(props) {
 
   const { type, message, open, setOpen } = props
 
-  const handleClick = () => {
-    setOpen(true);
-  };
-
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
