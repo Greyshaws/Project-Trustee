@@ -1,4 +1,6 @@
 import * as React from 'react';
+import Link from "next/link"
+import { useRouter } from "next/router";
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Typography from '@mui/material/Typography';
@@ -12,6 +14,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
 import AdbIcon from "@mui/icons-material/Adb";
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
+
+
+
 
 export default function NavDrawer({anchor="left", pages }) {
   const [state, setState] = React.useState({
@@ -20,6 +27,7 @@ export default function NavDrawer({anchor="left", pages }) {
     bottom: false,
     right: false,
   });
+  const router = useRouter();
 
 
   const toggleDrawer = (anchor, open) => (event) => {
@@ -57,30 +65,57 @@ export default function NavDrawer({anchor="left", pages }) {
         {pages.map((page, index) => (
           <ListItem key={page.link} disablePadding>
             <ListItemButton sx={{
+              color: "rgba(0,0,0,0.64)",
               "&:hover": {
                 color: "primary.main"
               }
             }}>
-              <ListItemIcon>
+              <ListItemIcon sx={{color: "inherit"}}>
                 {page.icon}
               </ListItemIcon>
-              <ListItemText primary={page.text} />
+              <Link href={page.link} style={{
+                textDecoration: "none",
+                color: "inherit",
+              }}>
+                {page.text}
+              </Link>
             </ListItemButton>
           </ListItem>
         ))}
+        
       </List>
       <Divider />
       <List>
-        {[].map((text, index) => (
-          <ListItem key={`${text}${index}`} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                <FiberManualRecordIcon />
+          <ListItem  disablePadding>
+            <ListItemButton onClick={() => {
+              router.push("/view-trust")
+            }} sx={{
+              color: "rgba(0,0,0,0.64)",
+              "&:hover": {
+                color: "primary.main"
+              }
+            }}>
+              <ListItemIcon sx={{color: "inherit"}}>
+                <HistoryEduIcon />
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={"View Trust"} />
             </ListItemButton>
           </ListItem>
-        ))}
+          <ListItem  disablePadding>
+            <ListItemButton onClick={() => {
+              router.push("/new-trust")
+            }} sx={{
+              color: "rgba(0,0,0,0.64)",
+              "&:hover": {
+                color: "primary.main"
+              }
+            }}>
+              <ListItemIcon sx={{color: "inherit"}}>
+                <CreateOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Create Trust"} />
+            </ListItemButton>
+          </ListItem>
       </List>
     </Box>
   );
