@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -63,7 +64,7 @@ contract Trustee is ReentrancyGuard, Ownable {
     // This contract address is the one on our server, it's the address that interact with our contact from
     // time to time, my idea is that this contract should be credited with some percentage matic once a user pays
     // so that this address always have matic to pay for gas fees.
-    address public automator;
+    address payable automator;
     uint256 accumulator;
 
     
@@ -71,18 +72,33 @@ contract Trustee is ReentrancyGuard, Ownable {
     //event ActivateTrust(address indexed _owner, address _beneficiary, uint256 value, uint256 deadline);
     //event AddAdditionalFunds(address indexed _owner, uint256 newFunds, uint256 totalValue, uint256 deadline);
 
-    function periodInSecs() private view returns (Period){
-        // for (uint256 i = 0; i < type(Period).max; i++) {
-            
-        // }
-        // string memory length = type(Period).max;
-        return type(Period).max;
-    // console.log(Period(_period));
+    function periodInSecs(uint8 _period) private pure returns (uint256 _periodInSecs){
+        if(_period == 0){
+            return 300;
+        } else if(_period == 1){
+            return 600;
+        } else if(_period == 2){
+            return 1800;
+        } else if(_period == 3){
+            return 3600;
+        } else if(_period == 4){
+            return 86400;
+         }else if(_period == 5){
+            return 604800;
+        } else if(_period == 6){
+            return 2419200;
+        } else if(_period == 7){
+            return 7257600;
+        } else if(_period == 8){
+            return 14515200;
+        } else if(_period == 9){
+            return 29030400;
+        }
     }
     
     function trustStatus() public view returns(bool, uint256){
        bool deadline;
-       if(TrustData[msg.sender].deadline == block.timestamp){
+       if(block.timestamp >= TrustData[msg.sender].deadline){
         deadline = true;
        }else{
         deadline = false;
@@ -91,10 +107,14 @@ contract Trustee is ReentrancyGuard, Ownable {
     }
 
 
-    modifier transfer {
+    modifier transfer(address payable _automator) {
         if(msg.value > 0){
-        accumulator += (msg.value * 50 / 100);
-        _;
+            Trust memory trust = TrustData[msg.sender];
+            uint256 automatorAmount = msg.value * 50 / 100;
+            (bool sent, ) = _automator.call{value: automatorAmount}("");
+            require(sent, "Failed to withdraw funds!!");
+            // SafeERC20.safeTransfer(IERC20(tokenAddress), _automator, automatorAmount);
+            _;
         }else{
             revert("Insufficient funds to create trust");
         }
@@ -106,13 +126,13 @@ contract Trustee is ReentrancyGuard, Ownable {
     }
 
     //at the expiration of the deadline, the funds will be released to the beneficiary's address.
-    function createTrust(uint256 _duration, Beneficiary[] calldata _beneficiaries, string calldata _description, string calldata _title, uint256 _period) payable external transfer{
+    function createTrust(uint256 _duration, Beneficiary[] calldata _beneficiaries, string calldata _description, string calldata _title, uint8 _period) payable external{
         require(_duration > 0, "Set duration");
         //require(msg.sender != _beneficiaries, "User cannot be beneficiary");
         require(!TrustData[msg.sender].active, "Address can't have multiple active trusts");
 
         uint256 count = _beneficiaries.length;
-        uint256 _deadline = block.timestamp + _duration;
+        uint256 _deadline = block.timestamp + periodInSecs(_period);
 
         for (uint256 i = 0; i < count; i++) {
             BeneficiaryData[msg.sender][i] = _beneficiaries[i];
@@ -122,6 +142,11 @@ contract Trustee is ReentrancyGuard, Ownable {
 
         //emit CreateTrust(msg.sender, _beneficiary, msg.value, _deadline, _duration, _description);
 
+    }
+
+    function deleteTrust() public returns (Trust memory) {
+        delete TrustData[msg.sender];
+        return TrustData[msg.sender];
     }
 
     //get Trust Details
@@ -155,7 +180,7 @@ contract Trustee is ReentrancyGuard, Ownable {
     }
 
     //deposit additional funds
-    function addAdditionalFunds() payable external transfer{
+    function addAdditionalFunds() payable external{
         Trust storage userDetails = TrustData[msg.sender];
         require(userDetails.amount > 0, "Not enough ETH");
         require(block.timestamp <= userDetails.deadline, "Past deadline already");
@@ -189,7 +214,7 @@ contract Trustee is ReentrancyGuard, Ownable {
         pricePerBeneficiary = _price;
     }
 
-    function setAutomator (address _automator) external onlyOwner {
+    function setAutomator (address payable _automator) external onlyOwner {
         automator = _automator;
     }
 
@@ -210,15 +235,28 @@ contract Trustee is ReentrancyGuard, Ownable {
 
     }
 
-    function singleTransfer (address _willOwner, uint256 _beneficiaryIndex) public {
-        Beneficiary memory beneficiary =  BeneficiaryData[_willOwner][_beneficiaryIndex];
-    }
+    // function singleTransfer (address _willOwner, uint256 _beneficiaryIndex, address _tokenAddress) public transfer(automator) {
+    //     uint256 count = TrustData[msg.sender].beneficiaryCount;
+    //     Beneficiary[] memory beneficiaries = new Beneficiary[](count);
+    //     for (uint256 i = 0; i < count; i++) {
+    //         beneficiaries[i] = BeneficiaryData[msg.sender][i];
+    //     }
+    //     if(beneficiaries[5] == _tokenAddress && beneficiaries[0] == true){
+    //         IERC721.safeTransferFrom(msg.sender, beneficiaries[4], beneficiaries[1]);
+    //     }else if(beneficiaries[5] == _tokenAddress && beneficiaries[0] == false){
+    //         SafeERC20.safeTransfer(IERC20(_tokenAddress), beneficiaries[4], msg.value);
+    //             uint256 amount = msg.value * 50 / 100;
+    //             (bool sent, ) = beneficiaries[4].call{value: amount}("");
+    //         require(sent, "Failed to withdraw funds!!");
+    //         }
+    //     Beneficiary memory beneficiary =  BeneficiaryData[_willOwner][_beneficiaryIndex];
+    // } 
 
     // This fuction should increase timer for the will
-    function paySubscription () payable external transfer subscriptionCheck {
+    function paySubscription () payable external transfer(automator) subscriptionCheck {
         Trust memory trust = TrustData[msg.sender];
         ++subscriptionCount;
-
+        
         subscriptionData[subscriptionCount] =  Subscription(msg.sender, trust.period, msg.value);
     }
 

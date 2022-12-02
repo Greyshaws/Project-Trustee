@@ -18,7 +18,9 @@ async function main() {
   // console.log(
   //   `Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
   // );
-  const trusteeContract = await hre.ethers.getContractFactory("Trustee");
+  const trusteeContract = await hre.ethers.getContractFactory(
+    "contracts/Trustee.sol:Trustee"
+  );
   const cloneContract = await hre.ethers.getContractFactory("cloneFactory");
   let provider = ethers.getDefaultProvider(
     "https://rpc-mumbai.maticvigil.com/"
@@ -26,9 +28,10 @@ async function main() {
   let signer = new ethers.Wallet(process.env.Polygon_PRIVATE_KEY, provider);
   const deployedContract = await trusteeContract.deploy();
   await deployedContract.deployed();
+  // console.log(deployedContract.periodInSecs(0));
   console.log("Trustee contract address:", deployedContract.address);
-  const txn = await deployedContract.periodInSecs();
-  console.log(txn);
+  // const txn = await deployedContract.periodInSecs();
+  // console.log(txn);
   const deployedCloneContract = await cloneContract.deploy(
     deployedContract.address
   );
@@ -39,6 +42,8 @@ async function main() {
     abi,
     signer
   );
+  // Create trust from clone
+
   // const clone = await contract.createTrust(
   //   2,
   //   "0x6D69AFE28964a746E372eD8f67097B6a46532F32",
