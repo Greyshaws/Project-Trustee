@@ -29,11 +29,11 @@ const Step1 = ({onDone, title,
 
 
 
-    const [beneficiaries, setBeneficiaries] = useState([1]);
+    const [beneficiaries, setBeneficiaries] = useState([{}]);
     
 
     const addBeneficiary = () => {
-      setBeneficiaries([...beneficiaries, 1])
+      setBeneficiaries([...beneficiaries, {}])
     }
 
 
@@ -125,7 +125,6 @@ const Step1 = ({onDone, title,
           }}>
             {(beneficiaryData.length < 1) ? "No" : beneficiaryData.length} Added {(beneficiaryData.length <= 1) ? "Beneficiary" : "Beneficiaries"}
           </Typography>
-        {(beneficiaryData.length === 0) && <Beneficiary onHandleEditBeneficiary={onHandleEditBeneficiary} onHandleAddBeneficiary={onHandleAddBeneficiary} onHandleDeleteBeneficiary={onHandleDeleteBeneficiary} /> }
 
         {
           beneficiaries.map((beneficiary, index) => {
