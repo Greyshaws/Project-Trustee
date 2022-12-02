@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "front-end",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -14,7 +14,10 @@
     "@mui/icons-material": "^5.10.14",
     "@mui/lab": "^5.0.0-alpha.108",
     "@mui/material": "^5.10.14",
+    "@mui/x-date-pickers": "^5.0.8",
     "@walletconnect/web3-provider": "^1.8.0",
+    "axios": "^1.2.0",
+    "dayjs": "^1.11.6",
     "eslint": "8.28.0",
     "eslint-config-next": "13.0.4",
     "ethers": "^5.7.2",

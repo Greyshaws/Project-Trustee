@@ -6,16 +6,14 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { Close } from '@mui/icons-material';
-import styles from '../../styles/Home.module.css'
+import styles from '../../../styles/Home.module.css'
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up"  />;
+  return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function Modal({title, children}) {
-
-  const { open, setOpen } = props
+export default function Modal({title, children, open, setOpen}) {
 
   const handleClose = () => {
     setOpen(false);
