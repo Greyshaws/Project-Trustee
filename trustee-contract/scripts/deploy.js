@@ -4,34 +4,25 @@ const abi = require("../artifacts/contracts/Trustee.sol/Trustee.json").abi;
 require("dotenv").config();
 
 async function main() {
-  // const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  // const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  // const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
-
-  // const lockedAmount = hre.ethers.utils.parseEther("1");
-
-  // const Lock = await hre.ethers.getContractFactory("Lock");
-  // const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
-
-  // await lock.deployed();
-
-  // console.log(
-  //   `Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
-  // );
   const trusteeContract = await hre.ethers.getContractFactory(
     "contracts/Trustee.sol:Trustee"
   );
+  const faucetContract = await hre.ethers.getContractFactory("Faucet");
   const cloneContract = await hre.ethers.getContractFactory("cloneFactory");
   let provider = ethers.getDefaultProvider(
     "https://rpc-mumbai.maticvigil.com/"
   );
+
   let signer = new ethers.Wallet(process.env.Polygon_PRIVATE_KEY, provider);
   const deployedContract = await trusteeContract.deploy();
   await deployedContract.deployed();
-  // console.log(deployedContract.periodInSecs(0));
+  const deployedFaucetContract = await faucetContract.deploy(
+    "Will Faucet Token",
+    "WFT"
+  );
+  await deployedFaucetContract.deployed();
   console.log("Trustee contract address:", deployedContract.address);
-  // const txn = await deployedContract.periodInSecs();
-  // console.log(txn);
+  console.log("Faucet contract address:", deployedFaucetContract.address);
   const deployedCloneContract = await cloneContract.deploy(
     deployedContract.address
   );
