@@ -5,7 +5,7 @@ import { providerOptions } from "./config";
 const contract = String(process.env.NEXT_PUBLIC_CONTRACT)
 
 
-export async function createTrust(interval, title, beneficiaries) {
+export async function createTrust(title, description, period, beneficiaries) {
 
     const provider = new ethers.providers.Web3Provider(window?.ethereum, 'any');
 
@@ -13,7 +13,7 @@ export async function createTrust(interval, title, beneficiaries) {
 
     const currentContract = new ethers.Contract(contract, contractABI, signer);
 
-    const result = await currentContract.createTrust(interval, title, beneficiaries);
+    const result = await currentContract.createTrust(10000000, beneficiaries, description, title, period, { value: ethers.utils.parseEther('0.001') });
 
     await result.wait()
 

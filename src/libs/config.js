@@ -13,9 +13,9 @@ export const providerOptions = {
     walletconnect: {
         package: WalletConnect, // required
         options: {
-        infuraId: process.env.NEXT_PUBLIC_API_KEY // required
+            infuraId: process.env.NEXT_PUBLIC_API_KEY // required
+        }   
     }
-  }
 };  
 
 

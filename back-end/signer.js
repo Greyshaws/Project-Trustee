@@ -32,3 +32,8 @@ exports.getSubscriptions = async(start, end) => {
 }
 
 
+exports.getTrustStatus = async(ownerAddress) => {
+    const result = await contract.trustStatus(ownerAddress)
+    return result
+}
+
