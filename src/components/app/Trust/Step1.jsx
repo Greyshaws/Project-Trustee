@@ -15,139 +15,153 @@ import NotesIcon from '@mui/icons-material/Notes';
 // import TimerIcon from '@mui/icons-material/Timer';
 import Beneficiary from "../../contract/Beneficiary";
 import FormHelperText from "@mui/material/FormHelperText"
+import CreateTrust from "./CreateTrust";
+import { createTrust } from "../../../libs/contractFuctions";
 
 
-const Step1 = ({onDone, title,
-  description,
-  period,
-  beneficiaryData,
-  onHandleTitleChange,
-  onHandlePeriodChange,
-  onHandleDescriptionChange,
-  onHandleAddBeneficiary,
-  onHandleDeleteBeneficiary, onHandleEditBeneficiary}) => {
+const Step1 = () => {
 
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [period, setPeriod] = useState(null)
 
+  const [beneficiaries, setBeneficiaries] = useState([{}]);
+  const [beneficiaryData, setBeneficiaryData] = useState([{}]);
 
-    const [beneficiaries, setBeneficiaries] = useState([{}]);
-    
+  const addBeneficiary = () => {
+    setBeneficiaries([...beneficiaries, {}])
+    setBeneficiaryData([...beneficiaryData, {}])
+  }
 
-    const addBeneficiary = () => {
-      setBeneficiaries([...beneficiaries, {}])
-    }
+  const handleSelectPeriod = (e) => {
+    setPeriod(e.target.value)
+  }
 
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value)
+  }
 
-    const handleSelectPeriod = (e) => {
-      onHandlePeriodChange(e.target.value)
-    }
-
-    const handleTitleChange = (e) => {
-      onHandleTitleChange(e.target.value)
-    }
-
-    const handleDescriptionChange = (e) => {
-      onHandleDescriptionChange(e.target.value)
-    }
-
-
-    let canCreateTrust = beneficiaryData.length >= 1;
-
-
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value)
+  }
   
+  const handleEditBeneficiary = (index, value) => {
+    const temp = [...beneficiaryData]
+    temp[index] = value
+    setBeneficiaryData(temp)
+  }
 
-    return (
-      <Box >
+  const hasError = () => {
+    if (period === null) return true
 
-        <Typography sx={{padding: 3}} variant="h4" textAlign={"center"} component="h1" gutterBottom> Create a Trust </Typography>
+    return false
+  }
 
-        <Grid container spacing={2} sx={{mb: 4}}>
+  const create = async () => {
+    try {
+      await createTrust(title, description, period, beneficiaryData)
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
-          <Grid item xs={8}>
+  console.log(beneficiaryData)
 
-            <TextField
-              label="Title"
-              fullWidth
-              value={title}
-              onChange={handleTitleChange}
-              helperText={"Add a Title"}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="start">
-                    <TitleIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
+  return (
+    <Box >
 
-          <Grid item xs={4}>
-            <FormControl fullWidth required={true}>
-              <InputLabel id="period-select-label" >Trust Period</InputLabel>
-                <Select  labelId="period-select-label" value={period} label="Trust Period" onChange={handleSelectPeriod}>
-                  <MenuItem value={1}>5 minutes</MenuItem>
-                  <MenuItem value={2}>30 minutes</MenuItem>
-                  <MenuItem value={3}> 1 hour</MenuItem>
-                  <MenuItem value={4}> 12 hours</MenuItem>
-                  <MenuItem value={5}> 1 day</MenuItem>
-                  <MenuItem value={6}> 1 week</MenuItem>
-                  <MenuItem value={8}> 1 month</MenuItem>
-                  {/* <MenuItem value={9}> 3 months</MenuItem>
-                  <MenuItem value={10}> 6 month</MenuItem> */}
-                </Select>
-              <FormHelperText>{"Trust Period"}</FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12}>
+      <Typography sx={{padding: 3}} variant="h4" textAlign={"center"} component="h1" gutterBottom> Create a Trust </Typography>
+
+      <Grid container spacing={2} sx={{mb: 4}}>
+
+        <Grid item xs={8}>
+
           <TextField
-              label="Description"
-              fullWidth
-              value={description}
-              onChange={handleDescriptionChange}
-              helperText={"Add a description"}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="start">
-                    <NotesIcon />
-                  </InputAdornment>
-                ),
-                "aria-describedby": "description-helper-text",
-              }}
-            />
-          </Grid>
-
+            label="Title"
+            fullWidth
+            value={title}
+            onChange={handleTitleChange}
+            helperText={"Add a Title"}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">
+                  <TitleIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
         </Grid>
 
-        <Box>
-          <Typography variant="h4" sx={{
-            fontSize: "1.125rem",
-            mt: 0,
-            mb: 4
-          }}>
-            {(beneficiaryData.length < 1) ? "No" : beneficiaryData.length} Added {(beneficiaryData.length <= 1) ? "Beneficiary" : "Beneficiaries"}
-          </Typography>
+        <Grid item xs={4}>
+          <FormControl fullWidth required={true}>
+            <InputLabel id="period-select-label" >Trust Period</InputLabel>
+              <Select  labelId="period-select-label" value={period} label="Trust Period" onChange={handleSelectPeriod}>
+                <MenuItem value={1}>5 minutes</MenuItem>
+                <MenuItem value={2}>10 minutes</MenuItem>
+                <MenuItem value={3}>30 minutes</MenuItem>
+                <MenuItem value={4}> 1 hour</MenuItem>
+                <MenuItem value={5}> 1 day</MenuItem>
+                <MenuItem value={6}> 1 week</MenuItem>
+                <MenuItem value={7}> 1 month</MenuItem>
+                {/* <MenuItem value={9}> 3 months</MenuItem>
+                <MenuItem value={10}> 6 month</MenuItem> */}
+              </Select>
+            <FormHelperText>{"Trust Period"}</FormHelperText>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+        <TextField
+            label="Description"
+            fullWidth
+            value={description}
+            onChange={handleDescriptionChange}
+            helperText={"Add a description"}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">
+                  <NotesIcon />
+                </InputAdornment>
+              ),
+              "aria-describedby": "description-helper-text",
+            }}
+          />
+        </Grid>
+
+      </Grid>
+
+      <Box>
+        <Typography variant="h4" sx={{fontSize: "1.125rem", mt: 0,mb: 4}}>
+          {(beneficiaryData.length < 1) ? "No" : beneficiaryData.length} Added {(beneficiaryData.length <= 1) ? "Beneficiary" : "Beneficiaries"}
+        </Typography>
 
         {
           beneficiaries.map((beneficiary, index) => {
-            return <Beneficiary key={index} beneficiary={beneficiaryData[index]} onHandleEditBeneficiary={onHandleEditBeneficiary} onHandleAddBeneficiary={onHandleAddBeneficiary} onHandleDeleteBeneficiary={onHandleDeleteBeneficiary} />
+            return <Beneficiary key={index} beneficiary={beneficiary} handleEditBeneficiary={handleEditBeneficiary} index={index} />
           })
         }
 
-        <Grid container item justifyContent={"flex-end"}>
-          <Button variant="contained" onClick={addBeneficiary} sx={{
-                  my: 2, ml: {xs: 0, sm: 2},
-                  width: {xs: "100%", sm: "auto"}
-                }}> Add Beneficiary</Button>
+      <Grid container item justifyContent={"flex-end"}>
+        <Button 
+          variant="contained" onClick={addBeneficiary} 
+          sx={{
+            my: 2, ml: {xs: 0, sm: 2},
+            width: {xs: "100%", sm: "auto"}
+          }}> Add Beneficiary</Button>
 
-          <Button variant="contained" onClick={() => {onDone()}} disabled={!canCreateTrust} sx={{
-                  my: 2, ml: {xs: 0, sm: 2},
-                  width: {xs: "100%", sm: "auto"}
-                }}> Create Trust</Button>
-        </Grid>
+        <Button 
+          variant="contained" 
+          onClick={create} disabled={hasError()} 
+          sx={{
+            my: 2, ml: {xs: 0, sm: 2},
+            width: {xs: "100%", sm: "auto"}
+          }}> Create Trust</Button>
 
-        </Box>
-        
+      </Grid>
+
       </Box>
-    );
+      
+    </Box>
+  );
 };
 
 export default Step1;

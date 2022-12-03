@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from "react";
-import useInput from "../../hooks/use-input"
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
@@ -18,7 +17,6 @@ import {
 } from "@mui/material";
 import TagIcon from "@mui/icons-material/Tag";
 import { mumbai } from "../../libs/assets";
-import Modal from "../app/Modal";
 import { getApproved, getApprovedTokens, getBalance } from "../../libs/functions";
 import { Web3Context } from "../../context/Web3Context";
 import ApproveTokenModal from "./ApproveTokenModal";
@@ -26,7 +24,7 @@ import ApproveNFTModal from "./ApproveNftModal";
 import useTrustInput from "../../hooks/trust-input";
 
 
-const Beneficiary = ({beneficiary = null, onHandleAddBeneficiary, onHandleDeleteBeneficiary, onHandleEditBeneficiary}) => {
+const Beneficiary = ({handleEditBeneficiary, index}) => {
 
   const { accounts } = useContext(Web3Context)
 
@@ -44,6 +42,8 @@ const Beneficiary = ({beneficiary = null, onHandleAddBeneficiary, onHandleDelete
   const [balance, setBalance] = useState(0)
   const [allowance, setAllowance] = useState(0)
   const [approveToken, setApproveToken] = useState(false)
+
+  const [formData, setFormData] = useState({})
 
   const onSelectToken = (e) => {
     setCurrentToken(mumbai[e.target.value])
@@ -84,6 +84,18 @@ const Beneficiary = ({beneficiary = null, onHandleAddBeneficiary, onHandleDelete
     isNftApproved()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenId.value, collectionAddress.value])
+
+  useEffect(() => {
+    if (isNFT)
+      setFormData([true, Number(tokenId.value), Number(amount.value), description, beneficiaryAddress.value, collectionAddress.value])
+    else setFormData([false, Number(tokenId.value), Number(amount.value), description, beneficiaryAddress.value, currentToken?.address])
+    }, [isNFT, tokenId.value, amount.value, description, beneficiaryAddress.value, collectionAddress.value, currentToken?.address])
+
+  //console.log(formData)
+
+  useEffect(() => {
+    handleEditBeneficiary(index, formData)
+  }, [formData, index])
 
 
   
@@ -195,7 +207,8 @@ const Beneficiary = ({beneficiary = null, onHandleAddBeneficiary, onHandleDelete
                       id="outlined-adornment-percent-token"
                       aria-describedby="token-percent-helper-text"
                       value={amount.value}
-                      onChange={amount.value}
+                      onChange={amount.onChange}
+                      onBlur={amount.onBlur}
                       label="Token Amount"
                       autoComplete='off'
                     />

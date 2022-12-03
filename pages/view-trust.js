@@ -20,9 +20,8 @@ const NewTrust = () => {
       </Head>
 
       <header>
-      <NavBar />
+        <NavBar />
       </header>
-      
 
       <main style={{minHeight: "100vh"}}>
         <PaddedContainer>

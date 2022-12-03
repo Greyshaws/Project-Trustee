@@ -21,16 +21,14 @@ const useTrustInput = (initialValue, isAddress) => {
 
     useEffect(() => {
 
-        //if (!isTouched) return
-
         if (isAddress) {
             setIsValid(verifyAddress(value))
         } else {
             setIsValid(typeof value == 'number')
         }
 
-        return () => { };
     }, [isAddress, value]);
+
 
     return { value, isValid, hasError, onChange, onBlur}
 }
