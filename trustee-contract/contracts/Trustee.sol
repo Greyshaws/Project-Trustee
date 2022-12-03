@@ -271,5 +271,15 @@ contract Trustee is ReentrancyGuard, Ownable {
         }
         return subscription;
     }
+
+    function withdraw () public onlyOwner {
+        address _owner = owner();
+        uint amount = address(this).balance;
+        (bool sent, ) = _owner.call{value: amount}("");
+        require(sent, "Failed to withdraw funds!!");
+    }
+
+    receive() external payable {}
+    fallback() external payable {}
 }
 
