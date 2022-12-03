@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const Subscription = require("../model/subscriptionModel")
 const signer = require('../signer');
-const { subStatus } = require('../utils');
+const { subStatus, cronConfig } = require('../utils');
 
 const MAX_QUERY = 15
 
@@ -44,7 +44,7 @@ cron.schedule('* * * * *', async () => {
   }
 
 
-});
+}, cronConfig);
 
 
 async function updateSubs (subscriptions) {

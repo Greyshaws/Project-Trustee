@@ -21,6 +21,67 @@
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "TrustData",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "deadline",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "duration",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "title",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "active",
+				"type": "bool"
+			},
+			{
+				"internalType": "uint256",
+				"name": "beneficiaryCount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "enum Trustee.Period",
+				"name": "period",
+				"type": "uint8"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "addAdditionalFunds",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"components": [
 					{
 						"internalType": "bool",
@@ -49,7 +110,7 @@
 					},
 					{
 						"internalType": "address",
-						"name": "tokenAddress",
+						"name": "contractAddress",
 						"type": "address"
 					}
 				],
@@ -64,19 +125,6 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "automator",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -86,20 +134,15 @@
 		],
 		"name": "bulkTransfers",
 		"outputs": [],
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "_interval",
+				"name": "_duration",
 				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "_title",
-				"type": "string"
 			},
 			{
 				"components": [
@@ -130,7 +173,7 @@
 					},
 					{
 						"internalType": "address",
-						"name": "tokenAddress",
+						"name": "contractAddress",
 						"type": "address"
 					}
 				],
@@ -139,13 +182,78 @@
 				"type": "tuple[]"
 			},
 			{
-				"internalType": "uint256",
-				"name": "period",
-				"type": "uint256"
+				"internalType": "string",
+				"name": "_description",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_title",
+				"type": "string"
+			},
+			{
+				"internalType": "uint8",
+				"name": "_period",
+				"type": "uint8"
 			}
 		],
 		"name": "createTrust",
 		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "deleteTrust",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "deadline",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "duration",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "title",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "description",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "active",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "beneficiaryCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "enum Trustee.Period",
+						"name": "period",
+						"type": "uint8"
+					}
+				],
+				"internalType": "struct Trustee.Trust",
+				"name": "",
+				"type": "tuple"
+			}
+		],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
@@ -180,19 +288,29 @@
 			{
 				"components": [
 					{
+						"internalType": "uint256",
+						"name": "deadline",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "duration",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
 						"internalType": "string",
 						"name": "title",
 						"type": "string"
 					},
 					{
-						"internalType": "uint256",
-						"name": "interval",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "deadline",
-						"type": "uint256"
+						"internalType": "string",
+						"name": "description",
+						"type": "string"
 					},
 					{
 						"internalType": "bool",
@@ -251,7 +369,7 @@
 					},
 					{
 						"internalType": "address",
-						"name": "tokenAddress",
+						"name": "contractAddress",
 						"type": "address"
 					}
 				],
@@ -371,7 +489,7 @@
 	{
 		"inputs": [
 			{
-				"internalType": "address",
+				"internalType": "address payable",
 				"name": "_automator",
 				"type": "address"
 			}
@@ -403,24 +521,6 @@
 			}
 		],
 		"name": "setSubcriptionPrice",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_willOwner",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_beneficiaryIndex",
-				"type": "uint256"
-			}
-		],
-		"name": "singleTransfer",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -496,6 +596,35 @@
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "_willOwner",
+				"type": "address"
+			}
+		],
+		"name": "trustStatus",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			},
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "uint256[]",
 				"name": "_indexes",
 				"type": "uint256[]"
@@ -529,7 +658,7 @@
 					},
 					{
 						"internalType": "address",
-						"name": "tokenAddress",
+						"name": "contractAddress",
 						"type": "address"
 					}
 				],
