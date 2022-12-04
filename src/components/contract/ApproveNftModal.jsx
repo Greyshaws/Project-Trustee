@@ -6,12 +6,12 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
-import { Close, ContactPageSharp } from '@mui/icons-material';
+import { Close, ContactPageSharp, Troubleshoot } from '@mui/icons-material';
 import styles from '../../../styles/Home.module.css'
 import { useContext, useState, useEffect } from "react";
 import { 
     Grid, FormControl, InputLabel,
-    FormHelperText, OutlinedInput
+    FormHelperText, OutlinedInput, CircularProgress
 } from "@mui/material"
 
 import { LoadingButton } from "@mui/lab";
@@ -32,10 +32,11 @@ const ApproveNFTModal = ({title,  open, setOpen, collectionAddress, tokenId, app
   const [tokenDetails, setTokenDetails] = useState(null);
   const [nftDetails, setNftDetails] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadingApprove, setLoadingApprove] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const approveNFT = async() => {
-    setLoading(true)
+    setLoadingApprove(true)
 
     try {
       await approve(collectionAddress, tokenId)
@@ -44,7 +45,7 @@ const ApproveNFTModal = ({title,  open, setOpen, collectionAddress, tokenId, app
       console.log(e)
     }
 
-    setLoading(false)
+    setLoadingApprove(false)
   }
 
 
@@ -60,11 +61,13 @@ const ApproveNFTModal = ({title,  open, setOpen, collectionAddress, tokenId, app
 
   const fetchNftDetails = async() => {
     const url = getNFTUrl(tokenDetails?.tokenUri)
+    setLoading(Troubleshoot)
     try {
       setNftDetails((await axios.get(url)).data)
     } catch (e) {
       console.error(e)
     }
+    setLoading(false)
   }
 
 
@@ -102,15 +105,19 @@ const ApproveNFTModal = ({title,  open, setOpen, collectionAddress, tokenId, app
         <Grid item container justifyContent={"center"} sx={{width: "100%", maxWidth: "600px", marginTop: 1}}>
             
           {
-            nftDetails && (
+            !loading ? (
               <Grid container item>
-                <NFTCard nft={nftDetails} />
+                {
+                  nftDetails &&  <NFTCard nft={nftDetails} />
+                }
               </Grid>
-            )       
+            )  :  (
+              <CircularProgress />
+            )     
           }
 
           {
-            !approved && <LoadingButton sx={{marginTop: "2em"}} loading={loading} variant={"contained"} onClick={approveNFT}>Approve</LoadingButton>
+            !approved && <LoadingButton sx={{marginTop: "2em"}} loading={loadingApprove} variant={"contained"} onClick={approveNFT}>Approve</LoadingButton>
           }
 
         </Grid>

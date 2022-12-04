@@ -14,6 +14,7 @@ import {
   TextField,
   InputAdornment,
   Divider,
+  CircularProgress,
 } from "@mui/material";
 import TagIcon from "@mui/icons-material/Tag";
 import { mumbai } from "../../libs/assets";
@@ -44,6 +45,9 @@ const Beneficiary = ({handleEditBeneficiary, index}) => {
   const [allowance, setAllowance] = useState(0)
   const [approveToken, setApproveToken] = useState(false)
 
+  const [loadingBalance, setLoadingBalance] = useState(false)
+  const [loadingAllowance, setLoadingAllowance] = useState(false)
+
   const [formData, setFormData] = useState({})
 
   const onSelectToken = (e) => {
@@ -52,10 +56,10 @@ const Beneficiary = ({handleEditBeneficiary, index}) => {
   }
 
   const hasError = () => {
-    const errors = beneficiaryAddress.hasError || collectionAddress.hasError 
-    if (isNFT) return errors || tokenId.hasError
+    const errors = beneficiaryAddress.hasError 
+    if (isNFT) return errors || tokenId.hasError || collectionAddress.hasError 
 
-    return errors || amount.hasError || currentToken
+    return errors || amount.hasError 
   }
 
   //for NFTs
@@ -85,8 +89,28 @@ const Beneficiary = ({handleEditBeneficiary, index}) => {
 
   const tokenDetails = async() => {
     if (!currentToken) return
-    setAllowance(await getApprovedTokens(currentToken.address, accounts))
-    setBalance(await getBalance(currentToken.address, accounts))
+    
+    setLoadingBalance(true)
+    setLoadingAllowance(true)
+
+    try {
+      setBalance(await getBalance(currentToken.address, accounts))
+    } catch (e) {
+
+      console.log(e)
+    }
+
+    setLoadingBalance(false)
+
+    try {
+      setAllowance(await getApprovedTokens(currentToken.address, accounts))
+    } catch (e) {
+
+      console.log(e)
+    }
+
+    setLoadingAllowance(false)
+
   }
 
   useEffect(() => {
@@ -105,7 +129,7 @@ const Beneficiary = ({handleEditBeneficiary, index}) => {
   useEffect(() => {
     handleEditBeneficiary(index, formData, hasError())
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formData, index, hasError()])
+  }, [formData, index])
   
   
   return (
@@ -166,7 +190,7 @@ const Beneficiary = ({handleEditBeneficiary, index}) => {
                       label="Asset"
                       value={tokenIndex}
                       onChange={onSelectToken}
-                      onBlur={null}                       >
+                      onBlur={null}>
                       {
                         mumbai.map((token, i) => (
                           <MenuItem key={token.symbol} value={i}>
@@ -224,10 +248,10 @@ const Beneficiary = ({handleEditBeneficiary, index}) => {
         {
           !isNFT && <>
             <Grid item xs={6} sm={3}>
-              Balance:{" "} {balance}
+              Balance: { loadingBalance ? <CircularProgress size={18} />: balance } 
             </Grid>
-            <Grid item xs={6} sm={3}>
-              Allowance:{" "} {allowance}
+            <Grid item xs={6} sm={3} >
+              Allowance: { loadingAllowance ? <CircularProgress size={18} />: allowance } 
             </Grid>
           </>
         }
