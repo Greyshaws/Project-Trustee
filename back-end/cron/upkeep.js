@@ -2,10 +2,12 @@ const cron = require('node-cron');
 const Subscription = require("../model/subscriptionModel");
 const { subStatus, M5, M10, M30, H1, M2, cronConfig } = require('../utils');
 
+const CONTRACT = process.env.CONTRACT
+
 const upkeepAction = async (period) => {
     try {
-        await Subscription.updateMany({ period, status: subStatus.subscription, new: false }, { $set: { status: subStatus.checked } });
-        await Subscription.updateMany({ period, status: subStatus.subscription, new: true }, { $set: { new: false } });
+        await Subscription.updateMany({ contract: CONTRACT, period, status: subStatus.subscription, new: false }, { $set: { status: subStatus.checked } });
+        await Subscription.updateMany({ contract: CONTRACT, period, status: subStatus.subscription, new: true }, { $set: { new: false } });
     } catch (e) {
         console.error(e)
     }

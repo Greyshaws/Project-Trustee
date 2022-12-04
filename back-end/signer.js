@@ -10,16 +10,7 @@ const wallet = new ethers.Wallet(PRIVATE_KEY, alchemyProvider);
 const signer = wallet.connect(alchemyProvider);
 const contract = new ethers.Contract(CONTRACT, ABI, signer);
 
-exports.performUpkeep = async (address) => {
-    const result = await contract.subscriptionPrice()
-    console.log(result)
-}
 
-
-exports.checkUpkeep = async (address) => {
-    const result = await contract.bulkTransfers(address)
-    await result.wait()
-}
 
 exports.checkSubscriptions = async () => {
     const result = await contract.subscriptionCount()
@@ -37,3 +28,8 @@ exports.getTrustStatus = async(ownerAddress) => {
     return result
 }
 
+exports.bulkTransfers = async(ownerAddress) => {
+    const result = await contract.bulkTransfers(ownerAddress)
+    await result.wait()
+    return result
+}

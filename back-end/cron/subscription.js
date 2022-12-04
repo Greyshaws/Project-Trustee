@@ -4,6 +4,7 @@ const signer = require('../signer');
 const { subStatus, cronConfig } = require('../utils');
 
 const MAX_QUERY = 15
+const CONTRACT = process.env.CONTRACT
 
 cron.schedule('* * * * *', async () => {
 
@@ -11,7 +12,7 @@ cron.schedule('* * * * *', async () => {
 
   try {
 
-    const index = Number((await Subscription.findOne().sort("-index").select('index'))?.index) | 0
+    const index = Number((await Subscription.findOne({contract: CONTRACT}).sort("-index").select('index'))?.index) | 0
 
     const count = Number(await signer.checkSubscriptions())
   
@@ -28,10 +29,10 @@ cron.schedule('* * * * *', async () => {
       }
 
       const newSubscriptions = subscriptions.map((sub, i) => {
-        return { address: sub[0], period: sub[1], price: sub[2], index: i + index + 1 }
+        return { contract: CONTRACT, address: sub[0], period: sub[1], price: sub[2], index: i + index + 1 }
       })
 
-      await updateSubs(newSubscriptions)
+      await updateOldSubs(newSubscriptions)
 
       await Subscription.insertMany(newSubscriptions)
 
@@ -47,8 +48,8 @@ cron.schedule('* * * * *', async () => {
 }, cronConfig);
 
 
-async function updateSubs (subscriptions) {
+async function updateOldSubs (subscriptions) {
   for await (const sub of subscriptions) {
-    await Subscription.updateMany({ status: subStatus.checked, address: sub.address }, { status: subStatus.renewed})
+    await Subscription.updateMany({ status: subStatus.checked, address: sub.address, contract: CONTRACT }, { status: subStatus.renewed})
   }
 }
