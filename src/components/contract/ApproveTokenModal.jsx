@@ -10,8 +10,7 @@ import styles from '../../../styles/Home.module.css'
 
 import { useContext, useState } from "react";
 import { 
-    Grid, FormControl, InputLabel,
-    FormHelperText, OutlinedInput
+  Grid, FormControl, InputLabel, OutlinedInput, Alert
 } from "@mui/material"
 
 import { LoadingButton } from "@mui/lab";
@@ -60,12 +59,14 @@ const ApproveTokenModal = ({title,  open, setOpen, token, allowance}) => {
 
       <DialogActions> <Button onClick={handleClose}> <Close /> </Button></DialogActions>
 
-      <DialogTitle sx={{color: "#000"}}>{title}</DialogTitle>
+      <DialogTitle textAlign={"center"} sx={{color: "#000"}}>{title}</DialogTitle>
+
+      <Alert sx={{marginLeft: "2em", marginRight: "2em"}} severity='info'> You should grant us Allowance greater than your Future Balance</Alert>
 
       <DialogContent className={styles.modal}>
 
         <Grid item container justifyContent={"center"} sx={{width: "100%", maxWidth: "600px", marginTop: 1}}>
-            
+          
           <FormControl fullWidth sx={{ width: "100%" }}>
 
             <InputLabel> Amount </InputLabel>

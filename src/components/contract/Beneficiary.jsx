@@ -31,14 +31,15 @@ const Beneficiary = ({handleEditBeneficiary, index}) => {
   const [isNFT, setIsNFT] = useState(false) 
   const [description, setDescription] = useState('') 
 
-  const beneficiaryAddress = useTrustInput(null, true)
-  const collectionAddress = useTrustInput(null, true)
-  const tokenId = useTrustInput(null, false)
-  const amount = useTrustInput(null, false)
+  const beneficiaryAddress = useTrustInput('', true)
+  const collectionAddress = useTrustInput('', true)
+  const tokenId = useTrustInput(0, false)
+  const amount = useTrustInput(0, false)
 
 
   //for Token
   const [currentToken, setCurrentToken] = useState(null)
+  const [tokenIndex, setTokenIndex] = useState(0)
   const [balance, setBalance] = useState(0)
   const [allowance, setAllowance] = useState(0)
   const [approveToken, setApproveToken] = useState(false)
@@ -47,9 +48,17 @@ const Beneficiary = ({handleEditBeneficiary, index}) => {
 
   const onSelectToken = (e) => {
     setCurrentToken(mumbai[e.target.value])
+    setTokenIndex(e.target.value)
   }
 
-  //for Token
+  const hasError = () => {
+    const errors = beneficiaryAddress.hasError || collectionAddress.hasError 
+    if (isNFT) return errors || tokenId.hasError
+
+    return errors || amount.hasError || currentToken
+  }
+
+  //for NFTs
   const [approveNFT, setApproveNFT] = useState(false)
   const [isApproved, setIsApproved] = useState(false)
 
@@ -87,17 +96,17 @@ const Beneficiary = ({handleEditBeneficiary, index}) => {
 
   useEffect(() => {
     if (isNFT)
-      setFormData([true, Number(tokenId.value), Number(amount.value), description, beneficiaryAddress.value, collectionAddress.value])
-    else setFormData([false, Number(tokenId.value), Number(amount.value), description, beneficiaryAddress.value, currentToken?.address])
-    }, [isNFT, tokenId.value, amount.value, description, beneficiaryAddress.value, collectionAddress.value, currentToken?.address])
+      setFormData([true, Number(tokenId.value), description, beneficiaryAddress.value, collectionAddress.value])
+    else setFormData([false, Number(amount.value), description, beneficiaryAddress.value, currentToken?.address])
+  }, [isNFT, tokenId.value, amount.value, description, beneficiaryAddress.value, collectionAddress.value, currentToken?.address])
 
-  //console.log(formData)
+
 
   useEffect(() => {
-    handleEditBeneficiary(index, formData)
-  }, [formData, index])
-
-
+    handleEditBeneficiary(index, formData, hasError())
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData, index, hasError()])
+  
   
   return (
     <Box sx={{mb: 4,}}>
@@ -130,11 +139,9 @@ const Beneficiary = ({handleEditBeneficiary, index}) => {
         <Grid item xs={12} md={5}>
           <Grid container spacing={2}>
             <Grid item xs={4}>
-              <FormControl fullWidth //error={isNFTHasError}
-              >
+              <FormControl fullWidth>
                 <InputLabel>Asset Type</InputLabel>
-                <Select value={isNFT} label="Asset Type" aria-describedby="asset-type-helper-text" onChange={onChangeTokenType} //onBlur={isNFTBlurHandler}
-                >
+                <Select value={isNFT} label="Asset Type" aria-describedby="asset-type-helper-text" onChange={onChangeTokenType} >
                   <MenuItem value={false}>Token</MenuItem>
                   <MenuItem value={true}>NFT</MenuItem>
                 </Select>
@@ -143,9 +150,8 @@ const Beneficiary = ({handleEditBeneficiary, index}) => {
             </Grid>
 
             <Grid item xs={4}>
-              <FormControl fullWidth error={collectionAddress.hasError}>
                 {isNFT ? (
-                  <>
+                  <FormControl fullWidth error={collectionAddress.hasError}>
                     <InputLabel> {"Collection Address"}</InputLabel>
                     <OutlinedInput
                       label="Collection Address"
@@ -153,29 +159,24 @@ const Beneficiary = ({handleEditBeneficiary, index}) => {
                       onBlur={collectionAddress.onBlur}
                     />
                     <FormHelperText>{"Paste the NFT collection address"}</FormHelperText>
-                      </>
-                    ) : (
-                      <>
-                        <InputLabel> {"Token"} </InputLabel>
-                        <Select
-                          label="Asset"
-                          value={currentToken?.address}
-                          onChange={onSelectToken}
-                          // onBlur={ collectionAddressBlurHandler}
-                          aria-describedby="token-address-helper-text"
-                        >
-                          {
-                            mumbai.map((token, i) => (
-                              <MenuItem key={token.symbol} value={i}>
-                                {token.symbol}
-                              </MenuItem>
-                            ))
-                          }
-                        </Select>
-                        <FormHelperText>{"Select a Cryptocurrency"}</FormHelperText>
-                      </>
-                    )}
-                  </FormControl>
+                  </FormControl>) : (
+                  <FormControl fullWidth>
+                    <InputLabel> {"Token"} </InputLabel>
+                    <Select
+                      label="Asset"
+                      value={tokenIndex}
+                      onChange={onSelectToken}
+                      onBlur={null}                       >
+                      {
+                        mumbai.map((token, i) => (
+                          <MenuItem key={token.symbol} value={i}>
+                            {token.symbol}
+                          </MenuItem>
+                        ))
+                      }
+                    </Select>
+                    <FormHelperText>{"Select a Cryptocurrency"}</FormHelperText>
+                  </FormControl>)}
                 </Grid>
 
               {isNFT ? (
@@ -193,6 +194,7 @@ const Beneficiary = ({handleEditBeneficiary, index}) => {
                       onBlur={tokenId.onBlur}
                       autoComplete='off'
                       label="Token ID"
+                      type="number"
                     />
                     <FormHelperText>{"Token ID E.g 8001"}</FormHelperText>
                   </FormControl>
@@ -201,18 +203,18 @@ const Beneficiary = ({handleEditBeneficiary, index}) => {
                 <Grid item xs={4}>
                   <FormControl fullWidth sx={{ width: "100%" }} error={amount.hasError}>
                     <InputLabel htmlFor="outlined-adornment-percent-token">
-                      Token Amount
+                      Token %
                     </InputLabel>
                     <OutlinedInput
-                      id="outlined-adornment-percent-token"
-                      aria-describedby="token-percent-helper-text"
                       value={amount.value}
                       onChange={amount.onChange}
                       onBlur={amount.onBlur}
                       label="Token Amount"
                       autoComplete='off'
+                      type="number"
+                      InputProps={{ min: "0", max: "100" }}
                     />
-                    <FormHelperText>{"E.g 100 USDC"}</FormHelperText>
+                    <FormHelperText>{"E.g 5% USDC"}</FormHelperText>
                 </FormControl>
               </Grid>
               )}
@@ -237,7 +239,6 @@ const Beneficiary = ({handleEditBeneficiary, index}) => {
             fullWidth
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            //onBlur={descriptionBlurHandler}
             helperText={"Add a description"}
             autoComplete='off'
             InputProps={{

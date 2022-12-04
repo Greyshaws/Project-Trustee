@@ -10,7 +10,7 @@ import { Web3Context } from "../../../context/Web3Context";
 import ViewTrust from "./ViewTrust";
 import { getMyTrust } from "../../../libs/contractFuctions";
 
-const ViewEditTrust = ({}) => {
+const ViewEditTrust = ({beneficiaryData}) => {
   const { accounts } = useContext(Web3Context);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -19,29 +19,7 @@ const ViewEditTrust = ({}) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [period, setPeriod] = useState(0);
-  const [beneficiaryData, setBeneficiaryData] = useState([
-    {
-      beneficiaryAddress: "asdfghjkljhgfdsafghjklhgfd",
-      description: "hello 1",
-      token: {
-        isNFT: false,
-        contractAddress: "sadbgfbvdcsafbgdsadf",
-        tokenID: "8001",
-        tokenPercent: 0.2, // 20%
-      },
-    },
 
-    {
-      beneficiaryAddress: "asdfghjkljhgfdsafghjklhgfd",
-      description: "hello 1",
-      token: {
-        isNFT: false,
-        contractAddress: "sadbgfbvdcsafbgdsadf",
-        tokenID: "8001",
-        tokenPercent: 0.92, // 92%
-      },
-    },
-  ]);
 
   const handleInteract = async () => {
     console.log("interacted");
@@ -135,64 +113,3 @@ const ViewEditTrust = ({}) => {
 
 export default ViewEditTrust;
 
-//  useEffect(() => {
-//     // const getTrust = async () => {
-//     //   const response = await getMyTrust().then(data => data.jsonResponse()).catch(err => console.log(err))
-//     //   return response;
-//     // }
-//     if (accounts) {
-
-//       // const trustDataFromChain = getTrust()
-//       console.log("trust data from chain: ");
-//       // e.g
-//       let trust = {
-//         title: "One of my trusts",
-//         description: "This trust has a description",
-//         period: 0,
-//         beneficiaryData: [
-//           {
-//             beneficiaryAddress: "asdfghjkljhgfdsafghjklhgfd",
-//             description: "hello 1",
-//             token: {
-//               isNFT: false,
-//               contractAddress: "sadbgfbvdcsafbgdsadf",
-//               tokenID: "8001",
-//               tokenPercent: 0.2, // 20%
-//             },
-//           },
-
-//           {
-//             beneficiaryAddress: "asdfghjkljhgfdsafghjklhgfd",
-//             description: "hello 1",
-//             token: {
-//               isNFT: false,
-//               contractAddress: "sadbgfbvdcsafbgdsadf",
-//               tokenID: "8001",
-//               tokenPercent: 0.92, // 92%
-//             },
-//           },
-//         ],
-//       };
-
-//       let trustFormated = {
-//         ...trust,
-//         beneficiaryData: trust.beneficiaryData.map((beneficiary) => {
-//           return {
-//             ...beneficiary,
-//             token: {
-//               ...beneficiary.token,
-//               tokenPercent: `${beneficiary.token.tokenPercent * 100}%`,
-//             },
-//             state: {
-//               saved: true,
-//               added: true,
-//             },
-//           };
-//         }),
-//       };
-//       setTitle(trustFormated.title);
-//       setDescription(trustFormated.description);
-//       setPeriod(trustFormated.period);
-//       setBeneficiaryData(trustFormated.beneficiaryData);
-//     }
-//   }, []);

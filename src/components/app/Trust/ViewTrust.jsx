@@ -15,9 +15,10 @@ import ViewBeneficiary from "./ViewBeneficiary";
 
 const periodFormats = ["5 minutes", "30 munites", "1 hour", "6 hours"]
 
-const ViewTrust = ({
-    title, description, period, beneficiaryData=[]
-}) => {
+const ViewTrust = ({title, description, period, beneficiaryData=[]}) => {
+
+
+
   return (
     <>
       <Box sx={{
@@ -89,10 +90,7 @@ const ViewTrust = ({
       <Divider />
       
 
-      <Box  sx={{
-        
-        mt: 2,
-      }}>
+      <Box  sx={{mt: 2,}}>
       <Typography variant="h4" sx={{
         fontSize: {xs: "1.125rem", md: "1.25rem"},
         my: 2,

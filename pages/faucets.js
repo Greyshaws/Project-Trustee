@@ -39,14 +39,14 @@ const NewTrust = () => {
             Faucets
           </Typography>
           <Box>
-      <Grid container spacing={2}>
-        {mumbai.map((faucet) => {
-          return (
-            <Faucet key={faucet.address} icon={faucet.icon} name={faucet.name} symbol={faucet.symbol} address={faucet.address} link={faucet.link} />
-          );
-        })}
-      </Grid>
-    </Box>
+            <Grid container spacing={2}>
+              {mumbai.map((faucet) => {
+                return (
+                  <Faucet key={faucet.address} icon={faucet.icon} name={faucet.name} symbol={faucet.symbol} address={faucet.address} link={faucet.link} />
+                );
+              })}
+            </Grid>
+          </Box>
           </Card>
           
 

@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Card } from "@mui/material";
 import Head from "next/head";
 import NavBar from "../src/components/app/Layout/Navbar";
@@ -5,8 +6,27 @@ import styles from "../styles/Home.module.css";
 import PaddedContainer from "../src/components/app/PaddedContainer";
 import Footer from "../src/components/app/Layout/Footer";
 import ViewEditTrust from "../src/components/app/Trust/ViewEditTrust";
+import { getMyTrust, getMyTrustBeneficiaries } from "../src/libs/contractFuctions";
 
 const NewTrust = () => {
+
+  const [beneficiaries, setBeneficiaries] =  useState([]);
+  const [trust, setTrust] =  useState([]);
+
+  const getWill = async ( ) => {
+    try {
+      setTrust(await getMyTrust())
+      setBeneficiaries(await getMyTrustBeneficiaries())
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+
+
+  useEffect(() => {
+    getWill()
+  }, []);
 
   return (
     <>
@@ -23,10 +43,8 @@ const NewTrust = () => {
       <main className={styles.background} style={{minHeight: "100vh"}}>
         <PaddedContainer>
           <Card>
-            <ViewEditTrust />
+            <ViewEditTrust beneficiaryData={beneficiaries} trust={trust} />
           </Card>
-          
-
         </PaddedContainer>
       </main>
       <Footer />

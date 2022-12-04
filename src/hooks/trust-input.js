@@ -8,7 +8,7 @@ const useTrustInput = (initialValue, isAddress) => {
     const [isTouched, setIsTouched] = useState(false)
 
 ;
-    const hasError = !isValid && isTouched;
+    const hasError = !isValid //&& isTouched;
 
     const onChange = (event) => {
         setValue(event.target.value)
@@ -24,7 +24,7 @@ const useTrustInput = (initialValue, isAddress) => {
         if (isAddress) {
             setIsValid(verifyAddress(value))
         } else {
-            setIsValid(typeof value == 'number')
+            setIsValid(typeof Number(value) == 'number')
         }
 
     }, [isAddress, value]);

@@ -13,7 +13,7 @@ export async function createTrust(title, description, period, beneficiaries) {
 
     const currentContract = new ethers.Contract(contract, contractABI, signer);
 
-    const result = await currentContract.createTrust(10000000, beneficiaries, description, title, period, { value: ethers.utils.parseEther('0.001') });
+    const result = await currentContract.createTrust(beneficiaries, description, title, period, { value: ethers.utils.parseEther('0.001') });
 
     await result.wait()
 
@@ -31,8 +31,6 @@ export async function getMyTrustBeneficiaries() {
 
     const result = await currentContract.getMyTrustBeneficiaries();
 
-    await result.wait()
-
     return result
 
 }
@@ -47,7 +45,6 @@ export async function getMyTrust() {
 
     const result = await currentContract.getMyTrust();
 
-    await result.wait()
 
     return result
 
