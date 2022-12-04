@@ -13,6 +13,7 @@ import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
 import AdbIcon from "@mui/icons-material/Adb";
+import InsightsIcon from "@mui/icons-material/Insights";
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
@@ -82,7 +83,26 @@ export default function NavDrawer({anchor="left", pages }) {
             </ListItemButton>
           </ListItem>
         ))}
-        
+        <ListItem disablePadding>
+            <ListItemButton sx={{
+              color: "rgba(0,0,0,0.64)",
+              "&:hover": {
+                color: "primary.main"
+              }
+            }}>
+              <ListItemIcon sx={{color: "inherit"}}>
+                <InsightsIcon />
+              </ListItemIcon>
+              <a href={"https://drive.google.com/file/d/1Mr-ZUylhj9NBis4W8rmlU-avAe9ShSHP/view?usp=share_link"}
+                    target="_blank"
+                    rel="noreferrer" style={{
+                textDecoration: "none",
+                color: "inherit",
+              }}>
+                White Paper
+              </a>
+            </ListItemButton>
+          </ListItem>
       </List>
       <Divider />
       <List>
@@ -116,6 +136,7 @@ export default function NavDrawer({anchor="left", pages }) {
               <ListItemText primary={"Create Trust"} />
             </ListItemButton>
           </ListItem>
+          
       </List>
     </Box>
   );

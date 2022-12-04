@@ -21,6 +21,22 @@ export async function createTrust(interval, title, beneficiaries) {
 }
 
 
+export async function getMyTrustBeneficiaries() {
+
+    const provider = new ethers.providers.Web3Provider(window?.ethereum, 'any');
+
+    const signer = provider.getSigner();
+
+    const currentContract = new ethers.Contract(contract, contractABI, signer);
+
+    const result = await currentContract.getMyTrustBeneficiaries();
+
+    await result.wait()
+
+    return result
+
+}
+
 export async function getMyTrust() {
 
     const provider = new ethers.providers.Web3Provider(window?.ethereum, 'any');

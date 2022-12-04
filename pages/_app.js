@@ -6,7 +6,7 @@ import { CacheProvider } from '@emotion/react';
 import theme from '../src/config/theme';
 import createEmotionCache from '../src/config/createEmotionCache';
 import { Web3Provider } from '../src/context/Web3Context';
-import TrustContextProvider from '../src/context/trust-context';
+// import TrustContextProvider from '../src/context/trust-context';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -16,7 +16,6 @@ export default function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
   return (
     <Web3Provider>
-      <TrustContextProvider>
       <CacheProvider value={emotionCache}>
         <Head>
           <meta name="viewport" content="initial-scale=1, width=device-width" />
@@ -27,7 +26,6 @@ export default function MyApp(props) {
           <Component {...pageProps} />
         </ThemeProvider>
       </CacheProvider>
-      </TrustContextProvider>
       
     </Web3Provider>
   );

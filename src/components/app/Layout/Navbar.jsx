@@ -21,9 +21,10 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import NavDrawer from "./NavDrawer";
 import HomeIcon from "@mui/icons-material/Home";
-import InsightsIcon from "@mui/icons-material/Insights";
+
 import DescriptionIcon from "@mui/icons-material/Description";
 
+import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
 
 
 const pages = [
@@ -33,15 +34,11 @@ const pages = [
     icon: <HomeIcon />,
   },
   {
-    text: "About",
-    link: "/about",
-    icon: <InsightsIcon />,
+    text: "Faucets",
+    link: "/faucets",
+    icon: <MonetizationOnOutlinedIcon />,
   },
-  {
-    text: "Paper",
-    link: "/white-paper",
-    icon: <DescriptionIcon />,
-  },
+  
 ];
 
 const NavBar = () => {
@@ -158,6 +155,29 @@ const NavBar = () => {
                 </Typography>
               </Box>
             ))}
+
+<Box  sx={{ my: 0, mx: 2, display: "block" }}>
+                <Typography
+                  sx={{
+                    color: "rgba(0,0,0,0.6)",
+                    "&:hover": {
+                      color: "primary.main",
+                    },
+                    "& a": {
+                      textDecoration: "none",
+                      color: "inherit",
+                    }
+                  }}
+                >
+                  <a
+                    href={"https://drive.google.com/file/d/1Mr-ZUylhj9NBis4W8rmlU-avAe9ShSHP/view?usp=share_link"}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Paper
+                  </a>
+                </Typography>
+              </Box>
           </Box>
 
           <Box sx={{ flexGrow: 0, ml: { md: 6 } }}>
