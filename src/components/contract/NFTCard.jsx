@@ -12,7 +12,7 @@ const NFTCard = (props) => {
         <Card justifyContent={"center"}  sx={{borderRadius: "10px", width: "100%"}}>
 
             <Grid container item justifyContent={"center"}>
-                <img src={getNFTUrl(image)} height="auto" width="100%" alt="NFT image" />
+                <img  style={{maxWidth: "340px"}} src={getNFTUrl(image)} height="auto" width="100%" alt="NFT image" />
             </Grid>
 
             <Typography sx={{ fontWeight: 700, fontSize: "1.4em"}} variant="body1">{name}</Typography>

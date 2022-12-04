@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Card } from "@mui/material";
 import Head from "next/head";
 import NavBar from "../src/components/app/Layout/Navbar";
@@ -7,6 +7,8 @@ import PaddedContainer from "../src/components/app/PaddedContainer";
 import Footer from "../src/components/app/Layout/Footer";
 import ViewEditTrust from "../src/components/app/Trust/ViewEditTrust";
 import { getMyTrust, getMyTrustBeneficiaries } from "../src/libs/contractFuctions";
+import PleaseLogin from "../src/components/app/PleaseLogin";
+import { Web3Context } from "../src/context/Web3Context";
 
 const NewTrust = () => {
 
@@ -27,6 +29,11 @@ const NewTrust = () => {
   useEffect(() => {
     getWill()
   }, []);
+
+  const { accounts, connect } = useContext(Web3Context);
+
+  if (!accounts) return (<PleaseLogin connect={connect}  />)
+
 
   return (
     <>

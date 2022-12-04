@@ -26,4 +26,28 @@ export const mumbai = [
         icon: '',
         link: ''
     },
+    {
+        name: "@Gracious",
+        symbol: "GREY",
+        address: "0xb0CC13c12985F6195a3591740393c5E72ED80DA4",
+        faucet: true,
+        icon: '',
+        link: ''
+    },
+    {
+        name: "@Precious",
+        symbol: "PRESH",
+        address: "0x1C1dF749c11A7a9739B2Ac7C68Ba19fCC2859e57",
+        faucet: true,
+        icon: '',
+        link: ''
+    },
+    {
+        name: "@Devine",
+        symbol: "DVN",
+        address: "0xf0Df94386f7fFF361bE70bCF6A9D401dfa368079",
+        faucet: true,
+        icon: '',
+        link: ''
+    }
 ]

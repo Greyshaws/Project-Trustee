@@ -77,8 +77,11 @@ const Step1 = () => {
       if (beneficiaryErrorsData[i]) return true
     }
 
-    return false 
+    console.log(period)
+
+    return false || (period === null ? true : false)
   }
+
 
 
   return (
