@@ -250,7 +250,6 @@ const NavBar = () => {
                   }}>
                     <LogoutIcon />
                   </IconButton>
-                  <Typography textAlign="center">Disconnect</Typography>
                 </MenuItem>
               
               

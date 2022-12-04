@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const Subscription = require("../model/subscriptionModel");
 const signer = require('../signer');
-const { subStatus, M5, M10, M30, H1, M2 } = require('../utils');
+const { subStatus, M5, M10, M30, H1, M2, D1, W1 } = require('../utils');
 
 const CONTRACT = process.env.CONTRACT
 
@@ -95,19 +95,19 @@ cron.schedule(H1, async () => {
 
 });
 
-// cron.schedule('0 * * * *', async () => {
+cron.schedule(D1, async () => {
 
-//     console.log("running creditor 1 hour")
+    console.log("running creditor 1 hour")
 
-//     await creditorAction(6)
+    await creditorAction(5)
 
-// });
+});
 
-// cron.schedule('0 * * * *', async () => {
+cron.schedule(W1, async () => {
 
-//     console.log("running creditor 1 hour")
+    console.log("running creditor 1 hour")
 
-//     await creditorAction(7)
+    await creditorAction(6)
 
-// });
+});
 

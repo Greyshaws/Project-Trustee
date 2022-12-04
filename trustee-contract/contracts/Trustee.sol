@@ -1,4 +1,4 @@
-]//SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
@@ -93,9 +93,10 @@ contract Trustee is ReentrancyGuard, Ownable {
     //-end modifier section
 
     
-    //event CreateTrust(address indexed _owner, address _beneficiary, uint256 value, uint256 deadline, uint256 duration, string description);
-    //event ActivateTrust(address indexed _owner, address _beneficiary, uint256 value, uint256 deadline);
-    //event AddAdditionalFunds(address indexed _owner, uint256 newFunds, uint256 totalValue, uint256 deadline);
+    event CreateTrust(address indexed owner, string title, string description);
+    event Subscriptions(address indexed owner, uint256 amount, Period period);
+    event TransferToBeneficiary(address indexed owner, address indexed beneficiary, address indexed contractAddress, bool isNft, uint256 value);
+
 
     function periodInSecs(uint8 _period) private pure returns (uint256 _periodInSecs){
         
@@ -150,7 +151,8 @@ contract Trustee is ReentrancyGuard, Ownable {
         trustData[msg.sender] = Trust(_deadline, msg.value, _title, _description, true, count, Period(_period));
         
         subscribe(msg.sender, Period(_period), msg.value);
-        //emit CreateTrust(msg.sender, _beneficiary, msg.value, _deadline, _duration, _description);
+
+        emit CreateTrust(msg.sender, _title, _description);
 
     }
 
@@ -189,13 +191,14 @@ contract Trustee is ReentrancyGuard, Ownable {
         return beneficiaries;
     }
 
-    function isNftApproved (address _nftAddress, uint256 _tokenId) public view returns(bool) {
+    function isApproved (address _nftAddress, uint256 _tokenId) public view returns(bool) {
         if (IERC721(_nftAddress).getApproved(_tokenId) != address(this)) {
             return false;
         } else {
             return true;
         }
     }
+
 
     function getApprovedTokens(address tokenAddress, address owner) public view returns(uint256) {
         return IERC20(tokenAddress).allowance(owner, address(this));
@@ -241,24 +244,35 @@ contract Trustee is ReentrancyGuard, Ownable {
         Beneficiary memory beneficiary = beneficiaryData[_willOwner][_beneficiaryIndex];
         if (!beneficiary.credited) {
             if (beneficiary.isNft) {
-                //IERC721(beneficiary.contractAddress).safeTransfer()
+                if(isApproved(beneficiary.contractAddress, beneficiary.value)) {
+                    IERC721(beneficiary.contractAddress).safeTransferFrom(_willOwner, beneficiary.beneficiaryAddress, beneficiary.value);
+                }
             } else {
                 uint256 value = getEntitlementOnDeath(_willOwner, beneficiary);
                 SafeERC20.safeTransferFrom(IERC20(beneficiary.contractAddress), _willOwner, beneficiary.beneficiaryAddress, value);
             }
             beneficiaryData[_willOwner][_beneficiaryIndex].credited = true;
         }
+
+        emit TransferToBeneficiary(_willOwner, beneficiary.beneficiaryAddress, beneficiary.contractAddress, beneficiary.isNft, beneficiary.value);
+
     } 
 
     // This fuction should increase timer for the will
     function paySubscription () payable external transfer subscriptionCheck {
         Trust memory trust = trustData[msg.sender];
+        
+        uint256 _deadline = block.timestamp + periodInSecs(uint8(trust.period));
+
+        trustData[msg.sender].deadline =_deadline; 
+        
         subscribe(msg.sender, trust.period, msg.value);
     }
 
     function subscribe (address owner, Period _period, uint256 _amount) internal {
         ++subscriptionCount;
         subscriptionData[subscriptionCount] =  Subscription(owner, _period, _amount);
+        emit Subscriptions(owner, _amount, _period);
     }
 
 
@@ -280,9 +294,9 @@ contract Trustee is ReentrancyGuard, Ownable {
         if (initialBalance == 0) {
             uint256 amount = allowance > balance ? balance : allowance;
             initialTokenBalance[_willOwner][_beneficiary.contractAddress] = amount;
-            return ((amount * value) / 100);
+            return ((amount * value) / 100) > amount ? 0 : ((amount * value) / 100);
         }
-        return ((value * initialBalance) / 100);
+        return ((value * initialBalance) / 100) > initialBalance ? 0 : ((value * initialBalance) / 100);
     }
 
     function withdraw () public onlyOwner {

@@ -3,37 +3,18 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-// import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-// import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import { Web3Context } from "../../../context/Web3Context";
-// import EditTrust from "./EditTrust";
-import ViewTrust from "./ViewTrust";
-import { getMyTrust } from "../../../libs/contractFuctions";
 
-const ViewEditTrust = ({beneficiaryData}) => {
+import ViewTrust from "./ViewTrust";
+import { paySubscription } from "../../../libs/contractFuctions";
+
+
+const ViewEditTrust = ({beneficiaryData, trust}) => {
+
   const { accounts } = useContext(Web3Context);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  // trust data
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [period, setPeriod] = useState(0);
-
-
-  const handleInteract = async () => {
-    console.log("interacted");
-    if (accounts) {
-      setIsLoading(true);
-      const response = await getMyTrust()
-        .then((data) => data)
-        .catch((err) => console.log(err));
-        setIsLoading(false);
-      console.log(response);
-    }
-  };
-
-  console.log(accounts);
 
   if (!accounts) {
     return <Box sx={{
@@ -64,7 +45,7 @@ const ViewEditTrust = ({beneficiaryData}) => {
       }}
     >
       <Typography
-        variant="h2"
+        variant="h4"
         component="h1"
         gutterBottom
         sx={{
@@ -73,7 +54,7 @@ const ViewEditTrust = ({beneficiaryData}) => {
           textAlign: "center",
         }}
       >
-        My Trust
+        My Will
       </Typography>
         {isLoading ? <Box sx={{
           p: 4,
@@ -83,28 +64,9 @@ const ViewEditTrust = ({beneficiaryData}) => {
         </Box> 
           : <>
         <ViewTrust
-        title={title}
-        description={description}
-        period={period}
-        beneficiaryData={beneficiaryData}
-      />
-      <Grid container item justifyContent={"flex-end"}>
-        
-        <Button
-          variant="contained"
-          onClick={() => {
-            handleInteract();
-          }}
-          sx={{
-            my: 2,
-            ml: { xs: 0, sm: 2 },
-            width: { xs: "100%", sm: "auto" },
-          }}
-        >
-          {" "}
-          INTERACT WITH CONTRACT
-        </Button>
-      </Grid>
+            beneficiaryData={beneficiaryData}
+            trust={trust}
+          />
         </>}
       
     </Box>
