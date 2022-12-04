@@ -1,15 +1,12 @@
-import { Button, Grid, Typography } from "@mui/material";
+import { Card } from "@mui/material";
 import Head from "next/head";
 import NavBar from "../src/components/app/Layout/Navbar";
-// import styles from "../styles/Home.module.css";
+import styles from "../styles/Home.module.css";
 import PaddedContainer from "../src/components/app/PaddedContainer";
-// import CreateTrust from "../src/components/app/Trust/CreateTrust";
 import Footer from "../src/components/app/Layout/Footer";
-import { useRouter } from "next/router";
 import ViewEditTrust from "../src/components/app/Trust/ViewEditTrust";
 
 const NewTrust = () => {
-  const router = useRouter();
 
   return (
     <>
@@ -23,10 +20,12 @@ const NewTrust = () => {
         <NavBar />
       </header>
 
-      <main style={{minHeight: "100vh"}}>
+      <main className={styles.background} style={{minHeight: "100vh"}}>
         <PaddedContainer>
+          <Card>
+            <ViewEditTrust />
+          </Card>
           
-          <ViewEditTrust />
 
         </PaddedContainer>
       </main>

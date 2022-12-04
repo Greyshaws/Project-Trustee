@@ -7,102 +7,101 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
-import MenuItem from "@mui/material/MenuItem";
+import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import TitleIcon from "@mui/icons-material/Title";
 import NotesIcon from "@mui/icons-material/Notes";
 import ViewBeneficiary from "./ViewBeneficiary";
 
+const periodFormats = ["5 minutes", "30 munites", "1 hour", "6 hours"]
+
 const ViewTrust = ({
-    title, description, period, beneficiaryData
+    title, description, period, beneficiaryData=[]
 }) => {
   return (
-    <Box>
-    <Grid
-      container
-      spacing={2}
-      sx={{
-        mb: 4,
-      }}
-    >
-      <Grid item xs={8}>
-        <TextField
-          id="outlined-multiline-flexible-title"
-          label="Title"
-          fullWidth
-          value={title}
-          InputLabelProps={{
-            htmlFor: "outlined-multiline-flexible-title",
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="start">
-                <TitleIcon />
-              </InputAdornment>
-            ),
-            readOnly: true,
-            "aria-describedby": "title-helper-text",
-          }}
-        />
-      </Grid>
-      <Grid item xs={4}>
-        <FormControl fullWidth required={true}>
-          <InputLabel id="period-select-label">Trust Period</InputLabel>
-          <Select
-            labelId="period-select-label"
-            value={period}
-            readOnly={true}
-            label="Trust Period"
-          >
-            <MenuItem value={0}>5 minutes</MenuItem>
-            <MenuItem value={1}>30 minutes</MenuItem>
-            <MenuItem value={2}> 1 hour</MenuItem>
-            <MenuItem value={3}> 12 hours</MenuItem>
-            <MenuItem value={4}> 1 day</MenuItem>
-            <MenuItem value={5}> 1 week</MenuItem>
-            <MenuItem value={6}> 1 month</MenuItem>
-            <MenuItem value={7}> 3 months</MenuItem>
-            <MenuItem value={8}> 6 month</MenuItem>
-          </Select>
-          
-        </FormControl>
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          id="outlined-multiline-flexible"
-          label="Description"
-          fullWidth
-          value={description}
-          InputLabelProps={{
-            htmlFor: "outlined-multiline-flexible",
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="start">
-                <NotesIcon />
-              </InputAdornment>
-            ),
-            readOnly: true,
-            "aria-describedby": "description-helper-text",
-          }}
-        />
-      </Grid>
-    </Grid>
+    <>
+      <Box sx={{
+        
+        mb: 2,
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "flex-end",
+      }}>
 
-    <Box>
-      <Typography
-        variant="h4"
-        sx={{
-          fontSize: "1.125rem",
-          mt: 0,
-          mb: 4,
-        }}
-      >
-        {beneficiaryData.length < 1 ? "No" : beneficiaryData.length} Added{" "}
-        {beneficiaryData.length <= 1 ? "Beneficiary" : "Beneficiaries"}
+      <Typography variant="h4" sx={{
+        fontSize: {xs: "1.125rem", md: "1.25rem"},
+        fontWeight: "500",
+      }}>
+          Title: 
       </Typography>
-  
+      <Typography variant="body1" sx={{
+        fontSize: {xs: "0.875rem", md: "1rem"},
+        ml: 1,
 
+      }}>
+          {title ? title : "No Title"}
+      </Typography>
+      </Box>
+      <Box sx={{
+        
+        mb: 2,
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "flex-end",
+      }}>
+      <Typography variant="h4" sx={{
+        fontSize: {xs: "1.125rem", md: "1.25rem"},
+        fontWeight: "500",
+      }}>
+          Description:  
+      </Typography>
+      <Typography variant="body1" sx={{
+        fontSize: {xs: "0.875rem", md: "1rem"},
+        ml: 1,
+
+      }}>
+          {description ? description : "No Description"}
+      </Typography>
+      </Box>
+      <Box sx={{
+        
+        mb: 2,
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "flex-end",
+      }}>
+      <Typography variant="h4" sx={{
+        fontSize: {xs: "1.125rem", md: "1.25rem"},
+        fontWeight: "500",
+      }}>
+          Period: 
+      </Typography>
+      <Typography variant="body1" sx={{
+        fontSize: {xs: "0.875rem", md: "1rem"},
+        ml: 1,
+        
+
+      }}>
+          {periodFormats[period]}
+      </Typography>
+      </Box>
+      
+      <Divider />
+      
+
+      <Box  sx={{
+        
+        mt: 2,
+      }}>
+      <Typography variant="h4" sx={{
+        fontSize: {xs: "1.125rem", md: "1.25rem"},
+        my: 2,
+        fontWeight: "500",
+      }}>
+      {(beneficiaryData.length <= 1) ? "Beneficiary: " : "Beneficiaries: "}
+      </Typography>
+      
+      <Grid container spacing={2}>
       {beneficiaryData.length !== 0 &&
         beneficiaryData.map((beneficiary, index) => {
           return (
@@ -113,9 +112,11 @@ const ViewTrust = ({
             />
           );
         })}
-     
-    </Box>
-  </Box>
+      </Grid>
+      
+      </Box>
+      
+  </>
   )
 }
 
