@@ -1,15 +1,32 @@
-import { Button, Grid, Typography } from "@mui/material";
+import { useState, useEffect } from "react";
+import { Card } from "@mui/material";
 import Head from "next/head";
 import NavBar from "../src/components/app/Layout/Navbar";
-// import styles from "../styles/Home.module.css";
+import styles from "../styles/Home.module.css";
 import PaddedContainer from "../src/components/app/PaddedContainer";
-// import CreateTrust from "../src/components/app/Trust/CreateTrust";
 import Footer from "../src/components/app/Layout/Footer";
-import { useRouter } from "next/router";
 import ViewEditTrust from "../src/components/app/Trust/ViewEditTrust";
+import { getMyTrust, getMyTrustBeneficiaries } from "../src/libs/contractFuctions";
 
 const NewTrust = () => {
-  const router = useRouter();
+
+  const [beneficiaries, setBeneficiaries] =  useState([]);
+  const [trust, setTrust] =  useState([]);
+
+  const getWill = async ( ) => {
+    try {
+      setTrust(await getMyTrust())
+      setBeneficiaries(await getMyTrustBeneficiaries())
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+
+
+  useEffect(() => {
+    getWill()
+  }, []);
 
   return (
     <>
@@ -23,11 +40,11 @@ const NewTrust = () => {
         <NavBar />
       </header>
 
-      <main style={{minHeight: "100vh"}}>
+      <main className={styles.background} style={{minHeight: "100vh"}}>
         <PaddedContainer>
-          
-          <ViewEditTrust />
-
+          <Card>
+            <ViewEditTrust beneficiaryData={beneficiaries} trust={trust} />
+          </Card>
         </PaddedContainer>
       </main>
       <Footer />

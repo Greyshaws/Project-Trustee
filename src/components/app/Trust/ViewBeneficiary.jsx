@@ -1,196 +1,126 @@
-import React, { useState, useContext, useEffect } from "react";
-import useInput from "../../../hooks/use-input"
+import React, { useContext } from "react";
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
+import Grid from "@mui/material/Grid";
+import Divider from "@mui/material/Divider";
+import { ethers, providers } from "ethers";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import Button from "@mui/material/Button";
-import {
-  OutlinedInput,
-  InputLabel,
-  FormControl,
-  MenuItem,
-  FormHelperText,
-  Grid,
-  Select,
-  TextField,
-  InputAdornment,
-} from "@mui/material";
-import TagIcon from "@mui/icons-material/Tag";
+import Typography from "@mui/material/Typography";
 import { supportedTokens } from "../../../libs/data";
+import { Web3Context } from "../../../context/Web3Context";
 
 
-const Beneficiary = ({
-  beneficiary = null,
-}) => {
 
-  
-const isNFT = beneficiary.token.isNFT
+const ViewBeneficiary = ({ beneficiary}) => {
+  const { accounts } = useContext(Web3Context);
 
-  const beneficiaryAddress = beneficiary.beneficiaryAddress
+  const isNFT = beneficiary[0];
 
-  const contractAddress = beneficiary.token.contractAddress;
+  const value = ethers.utils.formatEther(beneficiary[1]._hex);
 
-   const description = beneficiary.description
+  const description = beneficiary[2];
 
-  const tokenPercent = beneficiary.token.tokenPercent;
+  const beneficiaryAddress = beneficiary[3];
 
-  const tokenID = beneficiary.token.tokenID;
+  const contractAddress = beneficiary[4];
 
+  if (!isNFT) {
+
+    return (
+      <Grid item xs={12} md={6}>
+        <Box sx={{mb: 2,}}>
+          <Typography
+            variant="body1"
+            sx={{fontSize: { xs: "0.875rem", md: "1rem" },}}>
+            <b>Beneficiary Address:</b> {beneficiaryAddress}
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{fontSize: { xs: "0.875rem", md: "1rem" }}}>
+            <b>Asset Type:</b> Token
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{fontSize: { xs: "0.875rem", md: "1rem" }}}>
+            <b>Token:</b> {value}
+          </Typography>
+
+          <Typography
+            variant="body1"
+            sx={{fontSize: { xs: "0.875rem", md: "1rem" }}}>
+            <b>Description:</b> {description ? description : "none"}
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{fontSize: { xs: "0.75rem", md: "0.8em" },mt: 2,}}>
+            {/* Note: The address, {beneficiaryAddress} will recieve {tokenPercent}{" "}
+            {tokenSymbol} from your {tokenSymbol} balance in {walletAddress}, if
+            the period is completed without you interacting with this contract. */}
+          </Typography>
+          {/* <Alert severity="info">This is an info alert — check it out!</Alert> */}
+        </Box>
+        <Divider />
+      </Grid>
+    );
+  }
 
   return (
-    <Box
-      sx={{
-        mb: 4,
-      }}
-    >
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={7}>
-          <FormControl fullWidth sx={{ width: "100%" }} >
-            <InputLabel htmlFor="outlined-adornment-address">
-              Beneficiary Address
-            </InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-address"
-              aria-describedby="my-helper-text"
-              value={beneficiaryAddress}
-              readOnly={true}
-              endAdornment={
-                <IconButton aria-label="wallet" edge="end">
-                  <AccountBalanceWalletOutlinedIcon />
-                </IconButton>
-              }
-              label="Beneficiary Address"
-            />
-            
-          </FormControl>
-        </Grid>
-
-        <Grid item xs={12} md={5}>
-          <Grid container spacing={2}>
-            <Grid item xs={4}>
-              <FormControl fullWidth >
-                <InputLabel>Asset Type</InputLabel>
-                <Select value={isNFT} label="Asset Type" aria-describedby="asset-type-helper-text" readOnly={true}>
-                  <MenuItem value={false}>Token</MenuItem>
-                  <MenuItem value={true}>NFT</MenuItem>
-                </Select>
-                
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={4}>
-              <FormControl fullWidth>
-                {isNFT ? (
-                  <>
-                    <InputLabel> {"Contract Address"}</InputLabel>
-                    <OutlinedInput
-                      id="outlined-adornment-contract-address"
-                      label="Contract Address"
-                      aria-describedby="nft-address-helper-text"
-                      readOnly={true}
-                    />
-                    
-                  </>
-                ) : (
-                  <>
-                    <InputLabel> {isNFT ? "NFT" : "Token"}</InputLabel>
-                    <Select
-                      label="Asset"
-                      value={contractAddress}
-                      aria-describedby="token-address-helper-text"
-                      readOnly={true}
-                    >
-                      {supportedTokens.map((_token) => (
-                        <MenuItem key={_token.symbol} value={_token.contractAddress}>
-                          {_token.symbol}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    
-                  </>
-                )}
-              </FormControl>
-            </Grid>
-
-            {isNFT ? (
-              <Grid item xs={4}>
-                <FormControl fullWidth sx={{ width: "100%" }} >
-                  <InputLabel htmlFor="outlined-adornment-token-id">
-                    Token Id
-                  </InputLabel>
-                  <OutlinedInput
-                    id="outlined-adornment-token-id"
-                    aria-describedby="token-id-helper-text"
-                    value={tokenID}
-                    readOnly={true}
-                    label="Token ID"
-                  />
-                  
-                </FormControl>
-              </Grid>
-            ) : (
-              <Grid item xs={4}>
-                <FormControl fullWidth sx={{ width: "100%" }} >
-                  <InputLabel htmlFor="outlined-adornment-percent-token">
-                    % Token
-                  </InputLabel>
-                  <OutlinedInput
-                    id="outlined-adornment-percent-token"
-                    aria-describedby="token-percent-helper-text"
-                    value={tokenPercent}
-                    readOnly={true}
-                    label="% Token"
-                  />
-                  
-                </FormControl>
-              </Grid>
-            )}
-          </Grid>
-        </Grid>
-
-        <Grid item xs={6} sm={3}>
-          {" "}
-          Balance{" "}
-        </Grid>
-        <Grid item xs={6} sm={3}>
-          {" "}
-          Allowance{" "}
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            id="outlined-multiline-flexible-beneficiary-desc"
-            label="Description"
-            fullWidth
-            value={description}
-            InputLabelProps={{
-              htmlFor: "outlined-multiline-flexible-beneficiary-desc",
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  <TagIcon />
-                </InputAdornment>
-              ),
-              readOnly: true,
-              "aria-describedby": "beneficiary-description-text",
-            }}
-          />
-        </Grid>
-      </Grid>
-
-      <Grid
-        container
-        item
-        justifyContent={"flex-end"}
-        sx={{
-          my: 2,
-        }}
-      >
-        
-       
-      </Grid>
-    </Box>
+    <Grid item xs={12} md={6}>
+      <Box sx={{mb: 2}}>
+        <Typography
+          variant="body1"
+          sx={{fontSize: { xs: "0.875rem", md: "1rem" },}}
+        >
+          <b>Beneficiary Address:</b> {beneficiaryAddress}
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{
+            fontSize: { xs: "0.875rem", md: "1rem" },
+          }}
+        >
+          <b>Asset Type:</b> NFT
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{
+            fontSize: { xs: "0.875rem", md: "1rem" },
+          }}
+        >
+          <b>Contract Address:</b> {contractAddress}
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{
+            fontSize: { xs: "0.875rem", md: "1rem" },
+          }}
+        >
+          <b>Token ID:</b> {value}
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{
+            fontSize: { xs: "0.875rem", md: "1rem" },
+          }}
+        >
+          <b>Description:</b> {description ? description : "none"}
+        </Typography>
+        <Typography
+          variant="body2"
+          sx={{
+            fontSize: { xs: "0.75rem", md: "0.8rem" },
+            mt: 2,
+          }}
+        >
+          Note: The address, {beneficiaryAddress} will recieve the NFT with
+          contractAddress {contractAddress} and token ID {tokenID} from{" "}
+          {accounts}, if the period is completed without you interacting
+          with this contract.
+        </Typography>
+      </Box>
+      <Divider />
+    </Grid>
   );
 };
 
-export default Beneficiary;
+export default ViewBeneficiary;

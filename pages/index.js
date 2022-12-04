@@ -109,9 +109,9 @@ const Home = () => {
 
               <div>
 
-                <Typography className={styles.heading} variant={"h4"}> Your Beneficiaries will get credit once this Contract is activated </Typography>
+                <Typography className={styles.heading} variant={"h4"}> Your Beneficiaries will recieve your assets upon activation of this Contract</Typography>
 
-                <Button onClick={() => router.push('/new-trust')} className={styles.button} variant='contained'> Create Will Now </Button>
+                <Button onClick={() => router.push('/new-trust')} className={styles.button} variant='contained'> Create a will </Button>
 
               </div>
             </Grid>
