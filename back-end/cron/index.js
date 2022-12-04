@@ -1,3 +1,3 @@
 require('./subscription')
-//require('./upkeep')
-//require('./creditor')
+require('./upkeep')
+require('./creditor')
