@@ -13,4 +13,11 @@ export const mumbai = [
         faucet: '',
         icon: ''
     },
+    {
+        name: "@Joshuajee",
+        symbol: "JEE",
+        address: "0x35edF23bD48BF0ffbD18f57a71e4b29Ec838fA44",
+        faucet: '',
+        icon: ''
+    },
 ]

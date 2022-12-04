@@ -35,6 +35,8 @@ async function checkWillStatus(subscriptions) {
     for await (const sub of subscriptions) {
 
         const status = await signer.getTrustStatus(sub.address);
+
+        console.log(status)
         
         if (status[0] && status[1]) {
 

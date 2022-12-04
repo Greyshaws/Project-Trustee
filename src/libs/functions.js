@@ -36,9 +36,6 @@ export async function getApproved(nftAddress, tokenId) {
 
     const result = (await currentContract.getApproved(tokenId)) === contract;
 
-    console.log("result", (await currentContract.getApproved(tokenId)) )
-    console.log(contract)
-
     return result
 
 }
@@ -54,13 +51,9 @@ export async function getNFT(nftAddress, tokenId) {
 
     const currentContract = new ethers.Contract(nftAddress, nftABI, signer);
 
-    const name = await currentContract.name();
-
-    const symbol = await currentContract.symbol();
-
     const tokenUri = await currentContract.tokenURI(tokenId);
 
-    return { name, symbol, tokenUri }
+    return { tokenUri }
 
 }
 
@@ -75,7 +68,7 @@ export async function approveForTokens(tokenContract, amount) {
 
     const currentContract = new ethers.Contract(tokenContract, tokenABI, signer);
 
-    const result = await currentContract.approve(contract, amount);
+    const result = await currentContract.approve(contract, ethers.utils.parseEther(amount));
 
     await result.wait()
 
@@ -96,7 +89,7 @@ export async function getApprovedTokens(tokenAddress, owner) {
 
     const result = await currentContract.allowance(owner, contract);
 
-    return parseInt(result._hex, 16)
+    return ethers.utils.formatEther(result._hex)
 
 }
 
@@ -113,6 +106,6 @@ export async function getBalance(tokenAddress, owner) {
 
     const result = await currentContract.balanceOf(owner);
 
-    return parseInt(result._hex, 16) / (10 ** 18)
+    return ethers.utils.formatEther(result._hex)
 
 }

@@ -27,10 +27,12 @@ const Step1 = () => {
 
   const [beneficiaries, setBeneficiaries] = useState([{}]);
   const [beneficiaryData, setBeneficiaryData] = useState([{}]);
+  const [beneficiaryErrorsData, setBeneficiaryErrorsData] = useState([false]);
 
   const addBeneficiary = () => {
     setBeneficiaries([...beneficiaries, {}])
     setBeneficiaryData([...beneficiaryData, {}])
+    setBeneficiaryErrorsData([...beneficiaryErrorsData, false])
   }
 
   const handleSelectPeriod = (e) => {
@@ -45,14 +47,19 @@ const Step1 = () => {
     setDescription(e.target.value)
   }
   
-  const handleEditBeneficiary = (index, value) => {
+  const handleEditBeneficiary = (index, value, error) => {
     const temp = [...beneficiaryData]
     temp[index] = value
     setBeneficiaryData(temp)
+
+    const temps = [...beneficiaryErrorsData]
+    temps[index] = error
+    setBeneficiaryErrorsData(temps)
+    
   }
 
   const hasError = () => {
-    if (period === null) return true
+    if (period == null) return true
 
     return false
   }
@@ -65,7 +72,14 @@ const Step1 = () => {
     }
   }
 
-  console.log(beneficiaryData)
+  const anyError = () => {
+    for (let i = 0; i < beneficiaryErrorsData.length; i++) {
+      if (beneficiaryErrorsData[i]) return true
+    }
+
+    return false 
+  }
+
 
   return (
     <Box >
@@ -96,6 +110,7 @@ const Step1 = () => {
           <FormControl fullWidth required={true}>
             <InputLabel id="period-select-label" >Trust Period</InputLabel>
               <Select  labelId="period-select-label" value={period} label="Trust Period" onChange={handleSelectPeriod}>
+                <MenuItem value={0}>2 minutes</MenuItem>
                 <MenuItem value={1}>5 minutes</MenuItem>
                 <MenuItem value={2}>10 minutes</MenuItem>
                 <MenuItem value={3}>30 minutes</MenuItem>
@@ -131,12 +146,12 @@ const Step1 = () => {
 
       <Box>
         <Typography variant="h4" sx={{fontSize: "1.125rem", mt: 0,mb: 4}}>
-          {(beneficiaryData.length < 1) ? "No" : beneficiaryData.length} Added {(beneficiaryData.length <= 1) ? "Beneficiary" : "Beneficiaries"}
+          {(beneficiaryData?.length < 1) ? "No" : beneficiaryData?.length} Added {(beneficiaryData?.length <= 1) ? "Beneficiary" : "Beneficiaries"}
         </Typography>
 
         {
           beneficiaries.map((beneficiary, index) => {
-            return <Beneficiary key={index} beneficiary={beneficiary} handleEditBeneficiary={handleEditBeneficiary} index={index} />
+            return <Beneficiary key={index} beneficiary={beneficiary} errors={beneficiaryErrorsData} handleError={beneficiaryErrorsData} handleEditBeneficiary={handleEditBeneficiary} index={index} />
           })
         }
 
@@ -150,7 +165,7 @@ const Step1 = () => {
 
         <Button 
           variant="contained" 
-          onClick={create} disabled={hasError()} 
+          onClick={create} disabled={anyError()} 
           sx={{
             my: 2, ml: {xs: 0, sm: 2},
             width: {xs: "100%", sm: "auto"}
