@@ -2,14 +2,14 @@
 Cryptocurrency is one of the digital assets that helps us to re-take control over one of the key aspects of our lives, money. It lets us hold, trade, lend and borrow funds without ever having to trust a third party, keeping our key and our money always in our possession.
 But what happens to your digital assets after you die?  Is it safe to give a third-party(lawyer/beneficiary) access to your private key? How, if at all, should you go about creating a Trust/Will for your digital assets?
 
-Trustee is a next-generation property conveyance platform that incorporates blockchain technology for security and convenience. It adds another tool to the DeFi toolset, one that's usually overlooked; it provides means to manage our funds when we aren't here anymore. It offers a decentralized and peer-to-peer solution to the challenges involved in the conveyance and succession of digital assets/properties, by eliminating the middlemen (the lawyer, the trustee), and making the process seamless and cost-efficient.
+Trustee is a next-generation property conveyance platform that incorporates blockchain technology for security and convenience. It adds another tool to the DeFi toolset, one that's usually overlooked; it provides a means to manage our funds when we aren't here anymore. It offers a decentralized and peer-to-peer solution to the challenges involved in the conveyance and succession of digital assets/properties, by eliminating the middlemen (lawyer/trustee), and making the process seamless and cost-efficient.
 
 With Trustee, creating trusts or testamentary wills becomes a simple process.
 
 1. Enter details of the trust contract.
-2. Pick the duration of the dead-man-switch
+2. Pick the duration.
 3. Enter beneficiary details.
-4. Specify particular asset and amount.
+4. Specify particular asset and percentage.
 5. Create Trust
 
 
@@ -32,13 +32,13 @@ But the moment, the user stops subscribing/interacting with the contract, the ti
 Yes, you have to subscribe to the contract periodically to renew the Trust Period. Subscription is done immediately after creating the trust. And there is an option for subsequent subscription.
 
 ### Can I add multiple beneficiaries?
-Yes, you have the option of adding multiple beneficiaries and inputting their addresses to the contract. You also have to specify the asset type to transfer to each beneficiary. It could be an NFT or a Token. And the particular amount to transfer to each beneficiary.
+Yes, you have the option of adding multiple beneficiaries and inputting their addresses to the contract. You also have to specify the asset type to transfer to each beneficiary. It could be an NFT or a Token. And the particular percentage you wish to transfer to each beneficiary.
 The platform also supports the use of a Gnosis-safe wallet address, for users that wish for all beneficiaries to access the same trust contract.
 
 ### Can I add a description to my trust?
 Yes, you can add a title and description to your Trust.
 
-### Can I deposit ERC20, NFTs or any other kind of assets?
+### Can I deposit ERC20 tokens and NFTs?
 Yes, the platform supports multiple asset types. 
 For NFT’s, you have to input the NFT address and the token ID, for it to be eligible for transfer.
 And for tokens, the platform supports multiple tokens on the Polygon network, e.g USDC, USDT, etc. You have to specify the particular token he wishes to transfer, and the amount you wish to transfer to each beneficiary.
