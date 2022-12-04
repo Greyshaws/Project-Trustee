@@ -33,7 +33,7 @@ Yes, you have to subscribe to the contract periodically to renew the Trust Perio
 
 ### Can I add multiple beneficiaries?
 Yes, you have the option of adding multiple beneficiaries and inputting their addresses to the contract. You also have to specify the asset type to transfer to each beneficiary. It could be an NFT or a Token. And the particular amount to transfer to each beneficiary.
-The platform also supports the use of Gnosis-safe wallet addresses, for users that wish for all beneficiaries to access the same trust contract.
+The platform also supports the use of a Gnosis-safe wallet address, for users that wish for all beneficiaries to access the same trust contract.
 
 ### Can I add a description to my trust?
 Yes, you can add a title and description to your Trust.
