@@ -1,7 +1,6 @@
 import React from "react"
 import Head from "next/head";
 import NavBar from "../src/components/app/Layout/Navbar";
-// import styles from "../styles/Home.module.css";
 import styles from "../styles/Home.module.css";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -41,8 +40,9 @@ const NewTrust = () => {
           <Box>
             <Grid container spacing={2}>
               {mumbai.map((faucet) => {
+                console.log(faucet)
                 return (
-                  <Faucet key={faucet.address} icon={faucet.icon} name={faucet.name} symbol={faucet.symbol} address={faucet.address} link={faucet.link} />
+                  <Faucet key={faucet.address} icon={faucet.icon} name={faucet.name} symbol={faucet.symbol} address={faucet.address} link={faucet.link} faucet={faucet.faucet} />
                 );
               })}
             </Grid>

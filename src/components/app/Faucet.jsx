@@ -11,17 +11,39 @@ import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
 import LinkIcon from '@mui/icons-material/Link';
 import { truncateAddress } from "../../libs/utils";
+import { Alert, LoadingButton } from "@mui/lab";
+import { mint } from "../../libs/functions";
+import Toast from "./Alerts";
 
-const Faucet = ({icon, name, symbol, address, link}) => {
+const Faucet = ({icon, name, symbol, address, link, faucet}) => {
   const [copiedAddress, setCopiedAddress] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState(false)
+  const [message, setMessage] = useState("")
 
   const copyHandler = () => {
     navigator.clipboard.writeText(address);
     setCopiedAddress(true)
 
-        const timer = setTimeout(() => {
-                  setCopiedAddress(false)
-        }, 2000);
+    const timer = setTimeout(() => {
+      setCopiedAddress(false)
+    }, 2000);
+  }
+
+  const giveToken = async() => {
+
+    setLoading(true)
+    try {
+      await mint(address)
+      setSuccess(true)
+      setMessage(`You have received 100000 ${name}`)
+    } catch (e) {
+      setError(false)
+      setMessage(e?.message)
+    }
+    setLoading(false)
+
   }
 
 
@@ -37,9 +59,8 @@ const Faucet = ({icon, name, symbol, address, link}) => {
         }}
       >
         <Box sx={{
-            
-            mr: 2,
-            textAlign: "center",
+          mr: 2,
+          textAlign: "center",
         }}>
           <Box
             sx={{
@@ -107,7 +128,7 @@ const Faucet = ({icon, name, symbol, address, link}) => {
                     mb: 1,
 
                 }}>
-                {link && <Typography variant="body2" className="faucet-link" sx={{
+                {<Typography variant="body2" className="faucet-link" sx={{
                     "& a": {
                         color: "primary.main",
                         textDecoration: "none",
@@ -117,7 +138,18 @@ const Faucet = ({icon, name, symbol, address, link}) => {
                     }
                     
                 }}>
-                    Faucet Link: <a href={link} rel="noreferrer" target="_blank">{link} </a>
+
+                  { !faucet && (<> Faucet Link: <a href={link} rel="noreferrer" target="_blank">{link} </a> </>) }
+
+                  { faucet && (
+                    <LoadingButton 
+                      loading={loading}
+                      onClick={giveToken} variant="contained" >
+                      Give Me some {symbol}
+                    </LoadingButton>
+                    ) 
+                  }
+
                 </Typography>}
                 <LinkIcon className="faucet-link-icon" sx={{
                     fontSize: "1.25rem",
@@ -130,6 +162,8 @@ const Faucet = ({icon, name, symbol, address, link}) => {
         
       </Paper>
       <Divider />
+      <Toast message={message} open={success} setOpen={setSuccess} />
+      <Toast message={message} open={error} setOpen={setError} />
     </Grid>
   );
 };
