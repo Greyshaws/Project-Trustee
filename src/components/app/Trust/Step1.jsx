@@ -17,9 +17,15 @@ import Beneficiary from "../../contract/Beneficiary";
 import FormHelperText from "@mui/material/FormHelperText"
 import CreateTrust from "./CreateTrust";
 import { createTrust } from "../../../libs/contractFuctions";
+import { LoadingButton } from "@mui/lab";
+import { useRouter } from "next/router";
 
 
 const Step1 = () => {
+
+  const router = useRouter()
+
+  const [loading, setLoading] = useState(false)
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -65,11 +71,14 @@ const Step1 = () => {
   }
 
   const create = async () => {
+    setLoading(true)
     try {
       await createTrust(title, description, period, beneficiaryData)
+      router.push("view-trust")
     } catch (e) {
       console.log(e)
     }
+    setLoading(false)
   }
 
   const anyError = () => {
@@ -77,7 +86,6 @@ const Step1 = () => {
       if (beneficiaryErrorsData[i]) return true
     }
 
-    console.log(period)
 
     return false || (period === null ? true : false)
   }
@@ -166,13 +174,14 @@ const Step1 = () => {
             width: {xs: "100%", sm: "auto"}
           }}> Add Beneficiary</Button>
 
-        <Button 
+        <LoadingButton
           variant="contained" 
+          loading={loading}
           onClick={create} disabled={anyError()} 
           sx={{
             my: 2, ml: {xs: 0, sm: 2},
             width: {xs: "100%", sm: "auto"}
-          }}> Create Trust</Button>
+          }}> Create Will</LoadingButton>
 
       </Grid>
 

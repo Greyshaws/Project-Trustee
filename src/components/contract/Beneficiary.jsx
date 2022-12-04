@@ -298,7 +298,8 @@ const Beneficiary = ({handleEditBeneficiary, index}) => {
         allowance={allowance}  
         title={`Grant us approval to your ${currentToken?.symbol}`} 
         open={approveToken} 
-        setOpen={setApproveToken} /> 
+        setOpen={setApproveToken}
+        setAllowance={setAllowance} /> 
       
       <ApproveNFTModal 
         approved={isApproved}

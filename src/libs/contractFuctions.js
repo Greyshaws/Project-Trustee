@@ -1,8 +1,25 @@
 import { ethers, providers } from "ethers";
 import contractABI from "./contract_abi.json";
 import { providerOptions } from "./config";
+import { hexToDec } from "hex2dec";
 
 const contract = String(process.env.NEXT_PUBLIC_CONTRACT)
+
+
+export async function paySubscription() {
+
+    const provider = new ethers.providers.Web3Provider(window?.ethereum, 'any');
+
+    const signer = provider.getSigner();
+
+    const currentContract = new ethers.Contract(contract, contractABI, signer);
+
+    const result = await currentContract.paySubscription( { value: ethers.utils.parseEther("0.001") });
+
+    await result.wait()
+
+    return result
+}
 
 
 export async function createTrust(title, description, period, beneficiaries) {
@@ -13,7 +30,7 @@ export async function createTrust(title, description, period, beneficiaries) {
 
     const currentContract = new ethers.Contract(contract, contractABI, signer);
 
-    const result = await currentContract.createTrust(beneficiaries, description, title, period, { value: ethers.utils.parseEther('0.001') });
+    const result = await currentContract.createTrust(beneficiaries, description, title, period, { value: ethers.utils.parseEther("0.001") });
 
     await result.wait()
 

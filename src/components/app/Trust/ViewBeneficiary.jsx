@@ -2,12 +2,12 @@ import React, { useContext } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
-import { ethers, providers } from "ethers";
+import { ethers } from "ethers";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { supportedTokens } from "../../../libs/data";
 import { Web3Context } from "../../../context/Web3Context";
+import { hexToDec } from "hex2dec";
 
 
 
@@ -16,7 +16,7 @@ const ViewBeneficiary = ({ beneficiary}) => {
 
   const isNFT = beneficiary[0];
 
-  const value = ethers.utils.formatEther(beneficiary[1]._hex);
+  const value = hexToDec(beneficiary[1]._hex);
 
   const description = beneficiary[2];
 
@@ -42,7 +42,7 @@ const ViewBeneficiary = ({ beneficiary}) => {
           <Typography
             variant="body1"
             sx={{fontSize: { xs: "0.875rem", md: "1rem" }}}>
-            <b>Token:</b> {value}
+            <b>Token:</b> {value} %
           </Typography>
 
           <Typography
@@ -50,14 +50,13 @@ const ViewBeneficiary = ({ beneficiary}) => {
             sx={{fontSize: { xs: "0.875rem", md: "1rem" }}}>
             <b>Description:</b> {description ? description : "none"}
           </Typography>
-          <Typography
+          {/* <Typography
             variant="body2"
             sx={{fontSize: { xs: "0.75rem", md: "0.8em" },mt: 2,}}>
-            {/* Note: The address, {beneficiaryAddress} will recieve {tokenPercent}{" "}
-            {tokenSymbol} from your {tokenSymbol} balance in {walletAddress}, if
-            the period is completed without you interacting with this contract. */}
-          </Typography>
-          {/* <Alert severity="info">This is an info alert — check it out!</Alert> */}
+            Note: The address, {beneficiaryAddress} will recieve {value}{"%"}
+            {contractAddress} from your {contractAddress} balance in {accounts}, if
+            the period is completed without you interacting with this contract. 
+          </Typography> */}
         </Box>
         <Divider />
       </Grid>
@@ -105,7 +104,7 @@ const ViewBeneficiary = ({ beneficiary}) => {
         >
           <b>Description:</b> {description ? description : "none"}
         </Typography>
-        <Typography
+        {/* <Typography
           variant="body2"
           sx={{
             fontSize: { xs: "0.75rem", md: "0.8rem" },
@@ -116,7 +115,7 @@ const ViewBeneficiary = ({ beneficiary}) => {
           contractAddress {contractAddress} and token ID {tokenID} from{" "}
           {accounts}, if the period is completed without you interacting
           with this contract.
-        </Typography>
+        </Typography> */}
       </Box>
       <Divider />
     </Grid>

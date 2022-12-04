@@ -35,6 +35,7 @@ const ApproveTokenModal = ({title,  open, setOpen, token, allowance}) => {
 
     try {
       await approveForTokens(token.address, amount)
+      setAmount(amount)
       setSuccess(true)
     } catch (e) {
       console.log(e)

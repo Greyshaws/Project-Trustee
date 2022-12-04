@@ -24,8 +24,6 @@ const NewTrust = () => {
     }
   }
 
-
-
   useEffect(() => {
     getWill()
   }, []);
