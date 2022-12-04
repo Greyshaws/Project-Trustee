@@ -6,11 +6,11 @@ Trustee is a next-generation property conveyance platform that incorporates bloc
 
 With Trustee, creating trusts or testamentary wills becomes a simple process.
 
-Enter details of the trust contract.
-Pick the duration of the dead-man-switch
-Enter beneficiary details.
-Specify particular asset and amount.
-Create Trust
+1. Enter details of the trust contract.
+2. Pick the duration of the dead-man-switch
+3. Enter beneficiary details.
+4. Specify particular asset and amount.
+5. Create Trust
 
 
 ## Tech Stack
