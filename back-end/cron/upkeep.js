@@ -1,6 +1,6 @@
 const cron = require('node-cron');
 const Subscription = require("../model/subscriptionModel");
-const { subStatus, M5, M10, M30, H1, M2, cronConfig } = require('../utils');
+const { subStatus, M5, M10, M30, H1, M2, cronConfig, D1, W1 } = require('../utils');
 
 const CONTRACT = process.env.CONTRACT
 
@@ -50,6 +50,22 @@ cron.schedule(H1, async () => {
     console.log("running upkeep 1 hour")
 
     await upkeepAction(4)
+
+}, cronConfig);
+
+cron.schedule(D1, async () => {
+
+    console.log("running upkeep 1 hour")
+
+    await upkeepAction(5)
+
+}, cronConfig);
+
+cron.schedule(W1, async () => {
+
+    console.log("running upkeep 1 hour")
+
+    await upkeepAction(6)
 
 }, cronConfig);
 
