@@ -43,6 +43,9 @@ Yes, the platform supports multiple asset types.
 For NFT’s, you have to input the NFT address and the token ID, for it to be eligible for transfer.
 And for tokens, the platform supports multiple tokens on the Polygon network, e.g USDC, USDT, etc. You have to specify the particular token he wishes to transfer, and the amount you wish to transfer to each beneficiary.
 
+### Where can I get test tokens to test the contract?
+There's a faucet on our platform, where you can get test tokens of various kinds to test the contract.
+
 ### Is there a whitepaper?
 Yes, it is available here https://drive.google.com/file/d/1Mr-ZUylhj9NBis4W8rmlU-avAe9ShSHP/view?usp=share_link
 
