@@ -1,6 +1,7 @@
 import { ethers, providers } from "ethers";
 import tokenABI from "./token_abi.json";
 import nftABI from "./nft_abi.json";
+import faucetABI from "./faucet_abi.json";
 import { providerOptions } from "./config";
 
 const contract = String(process.env.NEXT_PUBLIC_CONTRACT)
@@ -108,4 +109,24 @@ export async function getBalance(tokenAddress, owner) {
 
     return ethers.utils.formatEther(result._hex)
 
+}
+
+
+
+
+export async function mint(tokenAddress) {
+
+    //for NFTs grant us approval
+
+    const provider = new ethers.providers.Web3Provider(window?.ethereum, 'any');
+
+    const signer = provider.getSigner();
+
+    const currentContract = new ethers.Contract(tokenAddress, faucetABI, signer);
+
+    const result = await currentContract.mint(ethers.utils.parseEther("100000"));
+
+    await result.wait()
+
+    return result
 }
